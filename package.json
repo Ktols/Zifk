@@ -1,0 +1,30 @@
+{
+  "name": "willakuyai",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx ts-node src/index.ts",
+    "write": "npx ts-node src/index.ts --write",
+    "speak:classic": "npx ts-node src/index.ts --speak-classic",
+    "speak:tts": "npx ts-node src/index.ts --speak-tts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@google-cloud/text-to-speech": "^6.4.0",
+    "@google/generative-ai": "^0.24.1",
+    "dotenv": "^17.4.2",
+    "ffmpeg-static": "^5.3.0",
+    "fluent-ffmpeg": "^2.1.3",
+    "microsoft-cognitiveservices-speech-sdk": "^1.49.0",
+    "rss-parser": "^3.13.0",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/fluent-ffmpeg": "^2.1.28",
+    "@types/node": "^25.6.0",
+    "typescript": "^6.0.3"
+  }
+}

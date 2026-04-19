@@ -1,0 +1,100 @@
+=====================================
+📻 GUION: Radio San Miguel - NoticIA 📻
+Fecha: 18-04-2026-23-08
+=====================================
+
+--- DIÁLOGO EN ESPAÑOL ---
+[MATEO]: Buenos días a toda nuestra audiencia de Radio San Miguel, su radio con las noticias a la vanguardia. Iniciamos NoticIA con información crucial para nuestras regiones.
+
+[YANIRA]: Así es, Mateo. Comenzamos con una situación preocupante en Loreto. La comunidad nativa de Pijuayal sigue sin recibir asistencia tras un derrame de hidrocarburos ocurrido hace más de un año. El líder comunal ha reportado el incidente del 19 de marzo de 2025 y la falta de ayuda.
+
+[MATEO]: Es una situación que nos duele profundamente. Es vital que las autoridades actúen con celeridad para proteger a nuestros hermanos y el medio ambiente.
+
+[YANIRA]: En otro frente de salud, la Diresa Puno ha confirmado 42 casos de sarampión. El Ministerio de Salud ha desplegado brigadas para reforzar la vacunación en la región.
+
+[MATEO]: Es una noticia que nos alerta sobre la importancia de la prevención. Hacemos un llamado a todas las familias en Puno a llevar a sus hijos a vacunar. La salud de nuestros niños es prioritaria.
+
+[YANIRA]: Precisamente, el Ministerio de Salud continúa impulsando la vacunación. Recientemente, se realizó una campaña de inmunización en la explanada del estadio Alejandro Villanueva, aprovechando un evento deportivo.
+
+[MATEO]: Qué buena iniciativa, Yanira. Acercar la salud a la gente, aprovechando momentos de gran concurrencia, es una estrategia efectiva para proteger a más peruanos.
+
+[YANIRA]: Pasando a la economía, el ministro de Economía y Finanzas, Rodolfo Acuña Namihas, ha enfatizado que los recursos públicos deben materializarse en obras que mejoren la calidad de vida de la población, sin demoras en su ejecución.
+
+[MATEO]: Esa es una exigencia justa de todos los ciudadanos. Queremos ver que nuestros impuestos se conviertan en escuelas, carreteras, postas médicas; en proyectos concretos que beneficien directamente a nuestras comunidades.
+
+[YANIRA]: En noticias de orgullo nacional, estudiantes peruanas han obtenido el primer y tercer puesto en la Olimpiada Europea Femenina de Matemáticas en Francia, demostrando su creatividad y pensamiento crítico.
+
+[MATEO]: ¡Qué alegría y orgullo! Nuestras jóvenes talentos dejando en alto el nombre del Perú. Son un ejemplo e inspiración para la juventud en cada rincón de nuestro país.
+
+[YANIRA]: En el ámbito deportivo, Alianza Lima goleó 8-0 a Cusco FC en el Estadio Alejandro Villanueva, marcando uno de los resultados más abultados del Torneo Apertura.
+
+[MATEO]: Un resultado contundente para Alianza, pero también un recordatorio de que el fútbol une a todo el país, desde la capital hasta nuestras regiones como Cusco.
+
+[YANIRA]: En la Liga de Naciones femenina, la selección de Perú cayó 1-0 ante Ecuador en Quito, complicando sus opciones de clasificación.
+
+[MATEO]: Siempre apoyando a nuestras seleccionadas. El camino es largo y su esfuerzo es admirable.
+
+[YANIRA]: En el panorama político, la Oficina Nacional de Procesos Electorales ha habilitado un enlace en su página web para que la ciudadanía pueda seguir en vivo los resultados de las Elecciones Generales 2026.
+
+[MATEO]: Es fundamental que todos los peruanos, en cada distrito y provincia, tengan acceso transparente a la información electoral. La participación ciudadana empieza por la información clara.
+
+[YANIRA]: Asimismo, el partido político Ahora Nación ha expresado su defensa a la independencia de los órganos electorales, rechazando cualquier intento de fraude.
+
+[MATEO]: La transparencia y la independencia de nuestras instituciones son pilares de la democracia. Es un mensaje importante para la confianza de todos los electores.
+
+[YANIRA]: En Arequipa, se reporta el lamentable fallecimiento de una madre de familia tras someterse a una operación estética. La Policía investiga el caso, enfrentando dificultades en el establecimiento de salud.
+
+[MATEO]: Una noticia dolorosa que nos llama a la reflexión y a la vigilancia. Es crucial investigar a fondo y garantizar la seguridad de los pacientes en todos los centros de salud del país.
+
+[YANIRA]: Finalmente, el Senamhi ha emitido el pronóstico del clima para hoy, sábado 18 de abril de 2026. Se recomienda a la población consultar la información actualizada para Lima y las diversas ciudades del Perú, incluyendo temperatura, radiación UV y probabilidad de lluvia.
+
+[MATEO]: Gracias, Yanira. Estar informados sobre el clima es esencial para nuestras actividades diarias, especialmente para nuestros agricultores que dependen de ello. Con esta información, cerramos este bloque de NoticIA.
+
+
+--- DIÁLOGO EN QUECHUA ---
+[MATEO]: Allin p'unchay, Radio San Miguel uyarikuqkunapaq. NoticIA nisqa programapi, ñawpaqman puriq willakuykunawanmi qallarisun.
+
+[YANIRA]: Ari, Mateo. Qallarisun Loreto suyupi huk sasachakuymanta. Pijuayal ayllu llaqtaqa, unayña yaku t'uruqasqanrayku, mana imaymanapas chaskirqanchu. Huk wata masñaña 2025 watapi, 19 p'unchay marzopi kay sasachakuy karqan, chaymantapacha mana yanapaq kanchu.
+
+[MATEO]: Ancha llakiymi kay willakuy. Hatun kamachiqkunaqa usqhaylla qhawaykunanku tiyan, llaqtanchikpa runankunatawan pachamamatawan amachaspa.
+
+[YANIRA]: Huk qhali kay willakuypiqa, Puno Diresa nisqaqa 42 sarampión onqosqakunatam riqsirichin. Qhali Kay Ministerioqa vacunas qoyta kallpachananpaqmi brigadakunata kachamun.
+
+[MATEO]: Kay willakuyqa ancha allinmi ñawpaqta qhawaykunapaq. Puno llaqtapi llapa ayllukunata wawankunata vacunachiq rinankupaqmi mañakuyku. Wawakunchikpa qhali kayninqa ancha allinmi.
+
+[YANIRA]: Chayrayku, Qhali Kay Ministerioqa vacunas qoyta kallpachachkanmi. Kunanqa Alejandro Villanueva estadiopa hawanpi, huk pukllay p'unchayta aprovechaspam, vacunas qoyta ruwarqanku.
+
+[MATEO]: Ancha allinmi chay ruway, Yanira. Qhali kayta runakunaman asuykachiyqa, achka runa huñukusqan p'unchaykunapiqa, ancha allinmi aswan peruanokunata amachanapaq.
+
+[YANIRA]: Qullqi willakuykunaman pasaspaqa, Qullqi Kamachiy Ministru, Rodolfo Acuña Namihas, nisqanman hinaqa, llaqtapa qullqinqa runakunaq kawsaynin allinyananpaqmi ruwaykunaman tukunan, mana unayachinachu.
+
+[MATEO]: Chayqa llapa llaqtayuqpa chanin mañakuyninmi. Impuestokunanchikqa yachaywasikunaman, ñankunaman, hampiwasikunaman tukunanmi; ayllunchikunata allinchanapaqmi ruwaykuna kanan.
+
+[YANIRA]: Llaqtanchikpa k'anchaynin willakuypiqa, Perú suyumanta warmikunaqa Francia llaqtapi, Europa Warmikunaq Matemáticas Olimpiadapi, ñawpaq kaqtawan kimsa kaqtawanmi atiparqanku, yachayninwan, yuyayninwanpas.
+
+[MATEO]: ¡Mayna kusikuy! Warmikunaq yachayninwan Perúpa sutinta hatunchasqanku. Paykunaqa llapa llaqtanchikpa wayna-wawankunapaqmi huk qhawarina kanku.
+
+[YANIRA]: Pukllay willakuypiqa, Alianza Limaqa 8-0 atiparqan Cusco FC nisqata Alejandro Villanueva estadiopi, kay Torneo Aperturapi huk hatun atipayta ruwaspa.
+
+[MATEO]: Alianzaq hatun atipaynin, ichaqa chaywanpas, pukllayqa llapa llaqtata huñun, Lima llaqtamanta Cusco suyukama.
+
+[YANIRA]: Warmikunaq Liga de Naciones nisqapiqa, Perúpa seleccionninqa 1-0 urmarqan Ecuadorwan Quito llaqtapi, chaywanqa manaña atipanankupaqqa sasañam.
+
+[MATEO]: Hayk'aqpas warmikunanchikta yanapaspa. Ñanqa unayraqmi, kallpachakuyninkuqa ancha sumaqmi.
+
+[YANIRA]: Polítika willakuypiqa, ONPE nisqaqa huk linkita qhawarichin web paginankupi, 2026 watapi Elecciones Generalespa resultadunkunata runakuna kawsachkaqta qhawanankupaq.
+
+[MATEO]: Ancha allinmi llapa peruanokuna, llapa distritupi, provinciapi, elecciones willakuyta qhawanankupaq. Llaqtayuqpa haywariyninqa willakuyta chaskisqanmantam qallarin.
+
+[YANIRA]: Chaymantapas, Ahora Nación partido polítikoqa elecciones ruwaqkunapa kamachiyqa sapallan kananpaqmi rimarqan, mayqin pantay ruwaytapas mana chaskispa.
+
+[MATEO]: Chay willakuykunaqa ancha allinmi, llaqtanchikpa kamachiyqa chaninwan sapallan kananpaq. Chayqa llapa akllaqkunapa iñiyninpaqmi ancha allin.
+
+[YANIRA]: Arequipa suyupiqa, huk mamaqa qhali kayninpaq ruwakusqanmanta wañusqa. Policiaqa chay ruwayta qhawaykachkan, ichaqa hampi wasipi sasachakuykuna kachkan.
+
+[MATEO]: Llakikuy willakuymi, chaymi yuyaymananapaq, qhawanapaqpas. Ancha allinmi tukuyta allinta qhawaykunapaq, hampi wasikunapi llapa onqosqakunapaqpas qhali kayta qaranapaq.
+
+[YANIRA]: Tukuytaq, Senamhiqa kunan p'unchaypa, 2026 wata abril killapa 18 p'unchayninpa, pacha willakuyninta qhawarichin. Runakunataqa Lima llaqtapaqpas, huk llaqtakunapaqpas, kunan pacha willakuyta qhawanankupaqmi willakuyku, q'oñi kayninta, inti rayminta, paramanta willakuynintapas.
+
+[MATEO]: Graciaskuna, Yanira. Pacha willakuyta yachayqa ancha allinmi p'unchay p'unchay ruwaykunapaq, aswanraq chakrakuna ruwaqkunapaq. Kay willakuywanmi NoticIA nisqa programanchikta tukuyku.
+

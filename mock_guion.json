@@ -1,0 +1,10 @@
+{
+  "spanish_script": [
+    { "speaker": "Mateo", "text": "Hola a todos, esto es una prueba técnica del sistema Willakuy." },
+    { "speaker": "Yanira", "text": "Exacto, Mateo. Estamos validando que las voces suenen naturales." }
+  ],
+  "quechua_script": [
+    { "speaker": "Mateo", "text": "Allinllachu llapaykichik, kayqa huk proballam." },
+    { "speaker": "Yanira", "text": "Arí, Mateo. Ruwayninchikta qhawaykushanchik." }
+  ]
+}
