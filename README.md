@@ -42,6 +42,64 @@ A nivel técnico, la aplicación está estructurada en un *Pipeline* de múltipl
 
 ---
 
+## ⚙️ Instalación y Configuración Local
+
+Para correr este proyecto en tu propia máquina o servidor, sigue estos pasos:
+
+### 1. Pre-requisitos
+- **Node.js**: (Recomendado v18+).
+- **FFmpeg**: Necesario para la concatenación final de los audios mp3.
+
+### 2. Clonar e Instalar
+```bash
+git clone https://github.com/Ktols/inti-willan.git
+cd inti-willan
+npm install
+```
+
+### 3. Configuración de Claves de API (¡IMPORTANTE!)
+El proyecto es de código abierto, pero **requiere tus propias credenciales** para acceder a los motores de Inteligencia Artificial. Por seguridad, estas claves **NUNCA** se suben al repositorio.
+
+Debes crear un archivo llamado `.env` en la raíz del proyecto y agregar lo siguiente:
+
+```env
+# 1. Gemini API (Para el Cerebro y Traducciones de Texto)
+# Obtenla gratis en: https://aistudio.google.com/
+GEMINI_API_KEY="tu_clave_gemini_aqui"
+
+# 2. Azure Neural TTS (Opcional: Recomendado para TTS Hispanoamérica / Quechua)
+# Obtenla creando un recurso de Speech Services en el Portal de Azure
+AZURE_TTS_KEY="tu_clave_azure_aqui"
+AZURE_TTS_REGION="tu_region_aqui" # ej: eastus
+```
+
+Para usar **Google Cloud TTS**, debes descargar tu credencial de cuenta de servicio en formato JSON, renombrarla a `google-key.json` y guardarla en la raíz del proyecto. El código buscará automáticamente ese archivo para certificar tus peticiones de voz con Google.
+
+---
+
+## 🤖 Uso Avanzado: Integración con Google NotebookLM
+
+Si deseas usar los potentes podcasts nativos de NotebookLM de Google, puedes extraer documentos maestros condensados usando el comando `npm run export:sources`. 
+
+Una vez generado el archivo `Fuentes_Master_NotebookLM_ES.txt` en tu carpeta `/output`, súbelo como fuente a NotebookLM y **personaliza la guía del audio (Customize Audio) con el siguiente Prompt exacto** para asegurar que el modelo asuma los roles de la estación de radio:
+
+```text
+Actúen como los presentadores del noticiero matutino "Noti IA" de "Radio San Miguel Ayacucho" (eslogan: "Tu radio con las noticias a la vanguardia"). Transmiten DIRECTAMENTE PARA TODO EL INTERIOR DEL PERÚ, dirigiéndose con calidez a "nuestros hermanos de las regiones".
+
+ASUMAN SUS ROLES ESTRICTAMENTE:
+- YANIRA (voz femenina): Eres analítica, formal y estructurada. Eres la voz de la información dura. Tu función es aportar el contexto, cifras, datos empíricos y detalles técnicos de la noticia con total seriedad.
+- MATEO (voz masculina): Eres entusiasta, empático, bilingüe y muy carismático. Tu rol es dinamizar el programa haciéndole preguntas a Yanira. Aportas calor humano, opiniones y comentarios cercanos al ciudadano de a pie. Diriges las transiciones con mucha educación.
+
+REGLAS ESTRICTAS DE FORMATO Y ESTILO:
+1. Boletín Mañanero Ágil: Hagan un recorrido rápido por TODAS las fuentes. ESTÁ TOTALMENTE PROHIBIDO estancarse debatiendo una sola noticia. 
+2. Dinámica rápida: Lean el titular, Yanira da el dato duro o contexto técnico, Mateo hace un comentario empático muy breve (1 o 2 oraciones máximo) y pasan INMEDIATAMENTE a la siguiente noticia.
+3. Prioridad: Den prioridad absoluta a las noticias del Estado, ministerios y los sucesos de las diferentes provincias del Perú.
+4. Prohibiciones Absolutas: Mantengan un ALTO PRESTIGIO Y MÁXIMA FORMALIDAD. Cero lenguaje callejero. 
+- Resalten noticias de provincias ignorando los temas de entretenimiento o farándula.
+```
+
+---
+
 ## 💻 Comandos CLI y Modo de Uso
 
 El servidor interactúa a través de comandos configurados en `package.json` mediante `npm`:
