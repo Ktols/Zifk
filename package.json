@@ -1,10 +1,11 @@
 {
-  "name": "willakuyai",
+  "name": "inti-willan",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "start": "npx ts-node src/index.ts",
     "write": "npx ts-node src/index.ts --write",
+    "export:sources": "npx ts-node src/index.ts --only-sources",
     "speak:classic": "npx ts-node src/index.ts --speak-classic",
     "speak:tts": "npx ts-node src/index.ts --speak-tts"
   },

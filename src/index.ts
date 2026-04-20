@@ -3,7 +3,7 @@ import path from "path";
 import * as dotenv from "dotenv";
 
 import { collectNews } from "./collect/rss_parser";
-import { generateScript, PodcastScript } from "./brain/script_generator";
+import { generateScript, PodcastScript, translateToQuechua } from "./brain/script_generator";
 import { generateAudioQueue } from "./voice/audio_manager";
 import { mergeAudios, sanityCheck } from "./output/ffmpeg_merger";
 
@@ -24,7 +24,8 @@ function initializeTempDirectories() {
 
 async function main() {
   const args = process.argv.slice(2);
-  const runWrite = args.length === 0 || args.includes("--write");
+  const runWrite = args.length === 0 || args.includes("--write") || args.includes("--only-sources");
+  const runOnlySources = args.includes("--only-sources");
   const runSpeakClassic = args.length === 0 || args.includes("--speak-classic");
   const runSpeakTts = args.length === 0 || args.includes("--speak-tts");
 
@@ -61,11 +62,26 @@ async function main() {
   const notebookLmDocument = massiveNews.map((n, i) => 
       `NOTICIA #${i+1}\n[TITULAR]: ${n.titulo}\n[FUENTE]: ${n.fuente}\n[FECHA]: ${n.fecha}\n[RESUMEN]: ${n.resumen}\n---`
   ).join('\n\n');
-  const notebookLmPath = path.resolve("output", `Fuentes_Master_NotebookLM_${timestamp}.txt`);
+  const notebookLmPath = path.resolve("output", `Fuentes_Master_NotebookLM_ES_${timestamp}.txt`);
   fs.writeFileSync(notebookLmPath, notebookLmDocument, "utf-8");
   console.log(`✅ ¡Megadocumento creado con ${massiveNews.length} artículos listos para la IA! Ruta: ${notebookLmPath}\n`);
 
+  try {
+      console.log("-> 🗣️ [Traducir] Generando equivalente en Quechua del documento maestro...");
+      const notebookLmQuechua = await translateToQuechua(notebookLmDocument);
+      const notebookLmQuechuaPath = path.resolve("output", `Fuentes_Master_NotebookLM_QU_${timestamp}.txt`);
+      fs.writeFileSync(notebookLmQuechuaPath, notebookLmQuechua, "utf-8");
+      console.log(`✅ ¡Megadocumento en Quechua creado exitosamente! Ruta: ${notebookLmQuechuaPath}\n`);
+  } catch (error) {
+      console.error("❌ Falló la traducción de fuentes a Quechua:", (error as Error).message);
+  }
+
   const news = baseNews;
+
+  if (runOnlySources) {
+      console.log("\n✅ [MODO SOLO FUENTES] Se ha exportado la documentación de NotebookLM (Español y Quechua). Abortando el resto del pipeline.");
+      process.exit(0);
+  }
   
   // 2. Cerebro (Prompting y Generación)
   try {
