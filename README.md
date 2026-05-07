@@ -1,8 +1,20 @@
-# Zifk
+<div align="center">
+  <img src="public/logo.svg" alt="Zifk Logo" width="150" />
+  
+  <h1>Zifk</h1>
 
-> **Bucea profundo. Informa al instante.**
+  > **Bucea profundo. Informa al instante.**
 
-*Inspirado en el Zifio — el mamífero marino de inmersiones profundas y ciclos de tiempo estrictos.*
+  *Inspirado en el Zifio — el mamífero marino de inmersiones profundas y ciclos de tiempo estrictos.*
+
+  <br />
+
+  ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+  ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+  ![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+  ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+  ![Google Gemini](https://img.shields.io/badge/Google%20Gemini-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white)
+</div>
 
 Plataforma web que automatiza la creación de **programas radiales de noticias con IA**. Define múltiples programas con personalidad propia, fuentes RSS y locutores virtuales — y genera podcasts profesionales con un solo clic usando **Google NotebookLM** como motor de voz.
 
