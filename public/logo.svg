@@ -1,0 +1,71 @@
+<!-- INICIO DEL SVG (Copia esto para tu app) -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+            <defs>
+                <!-- Degradado Tech Premium (Azul Profundo a Cyan Neón) -->
+                <linearGradient id="bodyFluid" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#1E1B4B"></stop>
+                    <stop offset="40%" stop-color="#3730A3"></stop>
+                    <stop offset="100%" stop-color="#00F0FF"></stop>
+                </linearGradient>
+
+                <!-- Degradado para elementos secundarios y aletas -->
+                <linearGradient id="finFluid" x1="0%" y1="100%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#312E81"></stop>
+                    <stop offset="100%" stop-color="#6366F1"></stop>
+                </linearGradient>
+
+                <!-- Brillo general del logo -->
+                <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="10" stdDeviation="15" flood-color="#00F0FF" flood-opacity="0.25"></feDropShadow>
+                </filter>
+            </defs>
+
+            <g filter="url(#neonGlow)">
+                <!-- ================= ALETAS TRASERAS (Profundidad) ================= -->
+                <!-- Aleta Dorsal (Swoop hidrodinámico) -->
+                <path d="M 170 150 Q 185 80 230 70 Q 210 110 210 135 Z" fill="url(#finFluid)"></path>
+                
+                <!-- Aleta Pectoral Trasera -->
+                <path d="M 180 240 Q 150 280 160 300 Q 180 280 200 245 Z" fill="#1E1B4B"></path>
+
+                <!-- ================= CUERPO PRINCIPAL (Flujo Continuo) ================= -->
+                <!-- Una sola curva Bézier hiper-fluida que forma todo el Zifio -->
+                <path d="
+                    M 340 200 
+                    C 340 120, 200 80, 100 160 
+                    C 70 140, 30 110, 10 110 
+                    C 30 150, 40 180, 30 200 
+                    C 40 220, 30 250, 10 290 
+                    C 30 290, 70 260, 100 240 
+                    C 200 320, 340 280, 340 200 Z" fill="url(#bodyFluid)"></path>
+
+                <!-- ================= DETALLES HIGH-TECH ================= -->
+                
+                <!-- Aleta Pectoral Frontal (Glassmorphism overlap) -->
+                <path d="M 160 235 Q 110 320 80 340 Q 120 300 145 240 Z" fill="url(#finFluid)" opacity="0.9"></path>
+
+                <!-- Acento de "Corte" en el cuerpo (Línea de flujo de datos/sonido) -->
+                <path d="M 100 200 Q 220 250 330 200" fill="none" stroke="#00F0FF" stroke-width="1.5" opacity="0.6" stroke-linecap="round"></path>
+                <path d="M 115 190 Q 220 235 310 190" fill="none" stroke="#A5B4FC" stroke-width="0.5" opacity="0.4" stroke-linecap="round"></path>
+
+                <!-- ================= EL OJO "PLAY" ================= -->
+                <!-- En lugar de un ojo de animal, es un botón de Play estilizado -->
+                <polygon points="275,185 275,201 289,193" fill="#00F0FF"></polygon>
+                <!-- Brillo del ojo -->
+                <circle cx="280" cy="193" r="15" fill="#00F0FF" opacity="0.2" filter="blur(4px)"></circle>
+
+                <!-- ================= ONDAS DE SONAR / PODCAST ================= -->
+                <!-- Ondas emitiendo desde el melón/frente del cetáceo -->
+                <g transform="translate(250, 100) rotate(15)">
+                    <path d="M -20 20 Q 0 0 20 20" fill="none" stroke="#00F0FF" stroke-width="3" stroke-linecap="round" opacity="1"></path>
+                    <path d="M -35 5 Q 0 -30 35 5" fill="none" stroke="#00F0FF" stroke-width="3" stroke-linecap="round" opacity="0.6"></path>
+                    <path d="M -50 -10 Q 0 -60 50 -10" fill="none" stroke="#00F0FF" stroke-width="3" stroke-linecap="round" opacity="0.3"></path>
+                </g>
+
+                <!-- Puntos de datos (Partículas digitales alrededor de la cola) -->
+                <circle cx="50" cy="150" r="2" fill="#00F0FF" opacity="0.8"></circle>
+                <circle cx="30" cy="170" r="1.5" fill="#A5B4FC" opacity="0.5"></circle>
+                <circle cx="80" cy="260" r="2.5" fill="#00F0FF" opacity="0.6"></circle>
+            </g>
+        </svg>
+        <!-- FIN DEL SVG -->

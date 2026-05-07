@@ -13,6 +13,9 @@ google-key.json
 /dist/
 /build/
 
+# Copilot agent skills (local)
+.agents/
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
@@ -22,6 +25,18 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
-# TypeScript transpiled files (si está configurado output dir, nosotros usamos ts-node pero por si acaso)
+# TypeScript transpiled files
 *.js.map
 *.d.ts.map
+src/**/*.d.ts
+src/**/*.js
+
+# Configuración local (se genera en onboarding)
+config.json
+
+# Data generada (audios, fuentes, metadata)
+/data/
+
+# NotebookLM session storage
+src/notebooklm/__pycache__/
+*.nlm_storage/

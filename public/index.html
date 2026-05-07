@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zifk</title>
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #090b10;
+            --surface: #12151e;
+            --surface-2: #1a1e2e;
+            --surface-3: #222840;
+            --border: #252b3d;
+            --border-hover: #3d4566;
+            --text: #e4e7f0;
+            --text-secondary: #9098b3;
+            --text-dim: #5c6484;
+            --accent: #818cf8;
+            --accent-bright: #a5b4fc;
+            --accent-deep: #4f46e5;
+            --cyan: #22d3ee;
+            --cyan-dim: rgba(34,211,238,0.12);
+            --success: #34d399;
+            --error: #f87171;
+            --warn: #fbbf24;
+            --glow: rgba(129,140,248,0.08);
+            --glow-strong: rgba(129,140,248,0.18);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 15px; }
+        body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+        /* ── Atmosphere ── */
+        .atmosphere { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+        .atmosphere::before { content: ''; position: absolute; top: -30%; right: -20%; width: 900px; height: 900px; background: radial-gradient(ellipse, rgba(79,70,229,0.07) 0%, transparent 65%); animation: drift 20s ease-in-out infinite; }
+        .atmosphere::after { content: ''; position: absolute; bottom: -30%; left: -15%; width: 700px; height: 700px; background: radial-gradient(ellipse, rgba(34,211,238,0.04) 0%, transparent 65%); animation: drift 25s ease-in-out infinite reverse; }
+        @keyframes drift { 0%,100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(40px, 30px) rotate(3deg); } }
+        .noise { position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.015; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+        /* ── Layout ── */
+        .app { display: flex; height: 100vh; position: relative; z-index: 1; }
+
+        /* ── Sidebar ── */
+        .sidebar { width: 280px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; }
+
+        .brand { padding: 1.6rem 1.6rem 1.8rem; border-bottom: 1px solid var(--border); }
+        .brand-inner { display: flex; align-items: center; gap: 1rem; }
+        .brand-logo { width: 72px; height: 72px; flex-shrink: 0; filter: drop-shadow(0 0 24px rgba(129,140,248,0.35)); }
+        .brand-text h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 900; letter-spacing: -1px; background: linear-gradient(135deg, var(--accent-bright), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
+        .brand-slogan { font-size: 0.68rem; color: var(--text-dim); letter-spacing: 0.6px; text-transform: uppercase; margin-top: 0.6rem; font-weight: 500; padding-left: 0.1rem; }
+
+        .sidebar nav { flex: 1; padding: 1.2rem 0; }
+        .nav-link { display: flex; align-items: center; gap: 0.85rem; padding: 0.75rem 1.6rem; font-size: 0.9rem; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: all 0.2s ease; border-left: 3px solid transparent; position: relative; }
+        .nav-link:hover { color: var(--text); background: var(--glow); }
+        .nav-link.active { color: var(--accent-bright); background: var(--glow-strong); border-left-color: var(--accent); font-weight: 600; }
+        .nav-link svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.7; flex-shrink: 0; }
+
+        .sidebar-footer { padding: 1.2rem 1.6rem; border-top: 1px solid var(--border); }
+        .sidebar-footer span { font-size: 0.72rem; color: var(--text-dim); }
+        .sidebar-footer strong { font-size: 0.72rem; color: var(--text-secondary); display: block; margin-top: 2px; }
+
+        /* ── Main ── */
+        .main { flex: 1; overflow-y: auto; scroll-behavior: smooth; }
+        .main-inner { max-width: 900px; margin: 0 auto; padding: 3rem 3.5rem; }
+
+        /* ── Pages ── */
+        .page { display: none; }
+        .page.active { display: block; animation: pageIn 0.35s ease; }
+        @keyframes pageIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        .page-header { margin-bottom: 2.5rem; }
+        .page-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 0.4rem; }
+        .page-desc { color: var(--text-secondary); font-size: 0.92rem; }
+
+        /* ── Cards ── */
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; margin-bottom: 1.5rem; transition: border-color 0.25s, box-shadow 0.25s; }
+        .card:hover { border-color: var(--border-hover); }
+        .section-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); margin-bottom: 1.4rem; display: flex; align-items: center; gap: 0.6rem; }
+        .section-label::before { content: ''; width: 3px; height: 14px; border-radius: 2px; background: linear-gradient(180deg, var(--accent), var(--cyan)); }
+
+        /* ── Forms ── */
+        .form-group { margin-bottom: 1.4rem; }
+        .form-label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.45rem; color: var(--text-secondary); }
+        .form-label a { color: var(--accent); text-decoration: none; font-weight: 500; font-size: 0.75rem; }
+        .form-label a:hover { text-decoration: underline; }
+        .form-input { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 10px; font-size: 0.9rem; background: var(--bg); color: var(--text); font-family: inherit; transition: all 0.2s; }
+        .form-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow-strong); }
+        .form-input::placeholder { color: var(--text-dim); }
+        textarea.form-input { min-height: 80px; resize: vertical; line-height: 1.5; }
+        select.form-input { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%235c6484' viewBox='0 0 16 16'%3E%3Cpath d='M8 12L2 6h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-hint { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; }
+
+        /* ── Buttons ── */
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.65rem 1.4rem; border: none; border-radius: 10px; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s ease; text-decoration: none; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent-deep), #7c3aed); color: white; box-shadow: 0 4px 16px rgba(79,70,229,0.35); }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(79,70,229,0.45); }
+        .btn-primary:active { transform: translateY(0); }
+        .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-secondary { background: var(--surface-2); border: 1px solid var(--border); color: var(--text); }
+        .btn-secondary:hover { border-color: var(--accent); background: var(--glow); }
+        .btn-danger { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); color: var(--error); font-size: 0.78rem; padding: 0.45rem 0.7rem; }
+        .btn-danger:hover { background: rgba(248,113,113,0.16); }
+        .btn-success { background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2); color: var(--success); }
+        .btn-lg { width: 100%; padding: 1rem; font-size: 1rem; border-radius: 12px; }
+        .btn-row { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
+
+        /* ── Badges ── */
+        .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.7rem; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
+        .badge-ok { background: rgba(52,211,153,0.1); color: var(--success); border: 1px solid rgba(52,211,153,0.2); }
+        .badge-warn { background: rgba(251,191,36,0.1); color: var(--warn); border: 1px solid rgba(251,191,36,0.2); }
+        .badge-muted { background: var(--surface-2); color: var(--text-dim); border: 1px solid var(--border); }
+
+        /* ── Status pills ── */
+        .status-row { display: flex; gap: 1rem; margin-bottom: 2rem; }
+        .status-pill { display: flex; align-items: center; gap: 0.55rem; font-size: 0.82rem; font-weight: 500; padding: 0.5rem 1rem; background: var(--surface-2); border-radius: 10px; border: 1px solid var(--border); color: var(--text-secondary); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .status-dot.ok { background: var(--success); box-shadow: 0 0 10px rgba(52,211,153,0.5); }
+        .status-dot.warn { background: var(--warn); box-shadow: 0 0 8px rgba(251,191,36,0.3); animation: blink 2s ease-in-out infinite; }
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* ── Program select (Generate page) ── */
+        .gen-select { width: 100%; padding: 0.9rem 1.2rem; border: 1px solid var(--border); border-radius: 12px; font-size: 0.95rem; background: var(--bg); color: var(--text); font-family: inherit; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%235c6484' viewBox='0 0 16 16'%3E%3Cpath d='M8 12L2 6h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1.2rem center; transition: all 0.2s; margin-bottom: 1.5rem; }
+        .gen-select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow-strong); }
+
+        .preview-card { background: linear-gradient(135deg, var(--surface-2), var(--surface-3)); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem 1.8rem; margin-bottom: 2rem; position: relative; overflow: hidden; }
+        .preview-card::after { content: ''; position: absolute; top: 0; right: 0; width: 120px; height: 120px; background: radial-gradient(circle, rgba(129,140,248,0.06), transparent 70%); pointer-events: none; }
+        .preview-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.2rem; }
+        .preview-radio { color: var(--accent); font-size: 0.85rem; font-weight: 500; }
+        .preview-meta { font-size: 0.78rem; color: var(--text-dim); margin-top: 0.7rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+        /* ── Progress ── */
+        .progress-area { margin-top: 2rem; }
+        .progress-header { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1rem; }
+        .progress-header .spinner { flex-shrink: 0; }
+        .progress-header-label { font-size: 0.92rem; font-weight: 600; color: var(--text); }
+        .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .progress-track { height: 5px; background: var(--surface-2); border-radius: 3px; overflow: hidden; margin-bottom: 1.2rem; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-deep), var(--accent), var(--cyan)); transition: width 0.6s ease; border-radius: 3px; }
+        .progress-steps { display: flex; flex-direction: column; gap: 0.1rem; }
+        .progress-step { display: flex; align-items: center; gap: 0.7rem; padding: 0.5rem 0.8rem; border-radius: 8px; font-size: 0.82rem; color: var(--text-dim); transition: all 0.3s; }
+        .progress-step.done { color: var(--text-secondary); }
+        .progress-step.done .step-icon { background: rgba(52,211,153,0.15); color: var(--success); }
+        .progress-step.active { color: var(--text); background: var(--glow); }
+        .progress-step.active .step-icon { background: rgba(129,140,248,0.2); color: var(--accent-bright); animation: blink 1.5s ease-in-out infinite; }
+        .progress-step.pending .step-icon { background: var(--surface-2); color: var(--text-dim); }
+        .step-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; flex-shrink: 0; transition: all 0.3s; }
+        .step-text { font-weight: 500; }
+
+        /* ── Error state ── */
+        .error-banner { background: rgba(248,113,113,0.06); border: 1px solid rgba(248,113,113,0.25); border-radius: 14px; padding: 1.5rem 1.8rem; margin-top: 1.5rem; animation: pageIn 0.3s ease; }
+        .error-banner-header { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem; }
+        .error-banner-icon { width: 36px; height: 36px; border-radius: 50%; background: rgba(248,113,113,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.2rem; }
+        .error-banner-title { font-size: 1rem; font-weight: 700; color: var(--error); }
+        .error-banner-msg { font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.6; padding-left: 2.9rem; }
+        .error-banner-actions { display: flex; gap: 0.6rem; align-items: center; padding-left: 2.9rem; }
+        .btn-toggle-log { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.9rem; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-secondary); font-size: 0.78rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .btn-toggle-log:hover { border-color: var(--accent); color: var(--text); }
+        .btn-toggle-log svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; transition: transform 0.2s; }
+        .btn-toggle-log.open svg { transform: rotate(180deg); }
+        .error-log-detail { margin-top: 1rem; display: none; }
+        .error-log-detail.open { display: block; }
+        .error-log-detail pre { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; line-height: 1.7; color: var(--text-dim); white-space: pre-wrap; word-break: break-word; max-height: 300px; overflow-y: auto; }
+        .error-log-detail pre .err-highlight { color: var(--error); font-weight: 600; }
+        .progress-fill.error { background: linear-gradient(90deg, var(--error), #ef4444); }
+        .success-banner { background: rgba(52,211,153,0.06); border: 1px solid rgba(52,211,153,0.25); border-radius: 14px; padding: 1.5rem 1.8rem; margin-top: 1.5rem; animation: pageIn 0.3s ease; display: flex; align-items: center; gap: 1rem; }
+        .success-banner-icon { width: 36px; height: 36px; border-radius: 50%; background: rgba(52,211,153,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.2rem; }
+        .success-banner-text { font-size: 0.92rem; color: var(--text); line-height: 1.5; }
+        .success-banner-text a { color: var(--accent); font-weight: 600; text-decoration: none; }
+        .success-banner-text a:hover { text-decoration: underline; }
+        .success-banner-text small { display: block; color: var(--text-dim); font-size: 0.78rem; margin-top: 0.2rem; }
+
+        /* ── Programs grid ── */
+        .programs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.2rem; }
+        .prog-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.8rem; transition: all 0.25s; cursor: pointer; position: relative; overflow: hidden; }
+        .prog-card:hover { border-color: var(--border-hover); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+        .prog-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent-deep), var(--accent), var(--cyan)); opacity: 0; transition: opacity 0.3s; }
+        .prog-card:hover::before { opacity: 1; }
+        .prog-card-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.2rem; }
+        .prog-card-radio { color: var(--accent); font-size: 0.82rem; font-weight: 500; margin-bottom: 0.5rem; }
+        .prog-card-slogan { font-size: 0.8rem; color: var(--text-dim); font-style: italic; margin-bottom: 0.8rem; }
+        .prog-card-meta { font-size: 0.75rem; color: var(--text-dim); display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+        .prog-card-actions { display: flex; gap: 0.6rem; }
+
+        /* ── History ── */
+        .history-group { margin-bottom: 3rem; }
+        .history-group-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 0.7rem; }
+        .history-group-title::before { content: ''; width: 4px; height: 18px; border-radius: 2px; background: linear-gradient(180deg, var(--accent), var(--cyan)); }
+        .day-group { margin-bottom: 1.8rem; }
+        .day-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--accent); margin-bottom: 0.8rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+        .history-entry { display: flex; flex-direction: column; gap: 0.8rem; padding: 1.4rem 1.6rem; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 0.8rem; transition: all 0.2s; }
+        .history-entry:hover { border-color: var(--border-hover); }
+        .history-entry-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+        .history-entry-title { font-size: 0.92rem; font-weight: 600; }
+        .history-entry-meta { font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+        .history-entry-links { margin-top: 0.3rem; display: flex; gap: 0.6rem; }
+        .history-entry-links button { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.3rem 0.7rem; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-secondary); font-size: 0.72rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .history-entry-links button:hover { border-color: var(--accent); color: var(--accent); }
+        .history-entry-links button svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+        /* ── Custom Audio Player ── */
+        .audio-player { display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; }
+        .audio-btn { width: 34px; height: 34px; border-radius: 50%; border: none; background: linear-gradient(135deg, var(--accent-deep), #7c3aed); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: all 0.2s; }
+        .audio-btn:hover { transform: scale(1.08); box-shadow: 0 4px 12px rgba(79,70,229,0.4); }
+        .audio-btn svg { width: 14px; height: 14px; fill: currentColor; stroke: none; }
+        .audio-progress { flex: 1; display: flex; align-items: center; gap: 0.6rem; }
+        .audio-bar-wrap { flex: 1; height: 4px; background: var(--surface-2); border-radius: 2px; cursor: pointer; position: relative; }
+        .audio-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--cyan)); border-radius: 2px; width: 0%; transition: width 0.1s linear; }
+        .audio-bar-wrap:hover .audio-bar { height: 6px; margin-top: -1px; }
+        .audio-time { font-size: 0.7rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; min-width: 70px; text-align: center; }
+        .audio-volume { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
+        .audio-volume svg { width: 14px; height: 14px; stroke: var(--text-dim); fill: none; stroke-width: 2; cursor: pointer; transition: stroke 0.2s; }
+        .audio-volume svg:hover { stroke: var(--accent); }
+        .audio-volume input[type=range] { width: 60px; height: 4px; -webkit-appearance: none; appearance: none; background: var(--surface-2); border-radius: 2px; cursor: pointer; }
+        .audio-volume input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: none; }
+
+        /* ── Floating Player ── */
+        .floating-player { position: fixed; bottom: 0; left: 0; right: 0; z-index: 150; background: var(--surface); border-top: 1px solid var(--border); padding: 0.6rem 1.5rem; display: flex; align-items: center; gap: 1rem; transform: translateY(100%); transition: transform 0.3s ease; box-shadow: 0 -4px 24px rgba(0,0,0,0.4); }
+        .floating-player.visible { transform: translateY(0); }
+        .fp-info { flex: 1; min-width: 0; }
+        .fp-title { font-size: 0.82rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .fp-time { font-size: 0.7rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+        .fp-controls { display: flex; align-items: center; gap: 0.6rem; }
+        .fp-btn { width: 36px; height: 36px; border-radius: 50%; border: none; background: linear-gradient(135deg, var(--accent-deep), #7c3aed); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+        .fp-btn:hover { transform: scale(1.08); box-shadow: 0 4px 12px rgba(79,70,229,0.4); }
+        .fp-btn svg { width: 14px; height: 14px; fill: currentColor; stroke: none; }
+        .fp-bar-wrap { flex: 2; height: 4px; background: var(--surface-2); border-radius: 2px; cursor: pointer; min-width: 120px; }
+        .fp-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--cyan)); border-radius: 2px; width: 0%; transition: width 0.1s linear; }
+        .fp-close { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-secondary); cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .fp-close:hover { border-color: var(--error); color: var(--error); }
+        .fp-volume { display: flex; align-items: center; gap: 0.3rem; }
+        .fp-volume input[type=range] { width: 60px; height: 4px; -webkit-appearance: none; appearance: none; background: var(--surface-2); border-radius: 2px; cursor: pointer; }
+        .fp-volume input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: none; }
+        .fp-volume svg { width: 14px; height: 14px; stroke: var(--text-dim); fill: none; stroke-width: 2; }
+
+        /* ── Recent Generations ── */
+        .recent-gen { margin-top: 2rem; }
+        .recent-gen-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-dim); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.6rem; }
+        .recent-gen-title::before { content: ''; width: 3px; height: 14px; border-radius: 2px; background: linear-gradient(180deg, var(--accent), var(--cyan)); }
+        .recent-item { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 1rem; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 0.6rem; cursor: pointer; transition: all 0.2s; }
+        .recent-item:hover { border-color: var(--border-hover); background: var(--surface-3); }
+        .recent-item-play { width: 30px; height: 30px; border-radius: 50%; border: none; background: linear-gradient(135deg, var(--accent-deep), #7c3aed); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+        .recent-item-play svg { width: 12px; height: 12px; fill: currentColor; stroke: none; }
+        .recent-item-info { flex: 1; min-width: 0; }
+        .recent-item-name { font-size: 0.82rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .recent-item-meta { font-size: 0.7rem; color: var(--text-dim); }
+        .recent-item-dl { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-dim); background: var(--surface-2); flex-shrink: 0; transition: color 0.2s, background 0.2s; }
+        .recent-item-dl:hover { color: var(--accent); background: rgba(99,102,241,0.15); }
+
+        /* ── RSS Finder ── */
+        .rss-search-box { display: flex; gap: 0.8rem; margin-bottom: 1.5rem; }
+        .rss-search-box input { flex: 1; }
+        .rss-results { display: flex; flex-direction: column; gap: 0.8rem; }
+        .rss-result-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.5rem; transition: all 0.2s; }
+        .rss-result-card:hover { border-color: var(--border-hover); }
+        .rss-result-name { font-size: 0.92rem; font-weight: 600; margin-bottom: 0.2rem; }
+        .rss-result-url { font-size: 0.75rem; color: var(--text-dim); word-break: break-all; margin-bottom: 0.5rem; font-family: 'JetBrains Mono', monospace; }
+        .rss-result-desc { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.8rem; }
+        .rss-result-actions { display: flex; gap: 0.5rem; align-items: center; }
+        .rss-result-check { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .rss-result-check.selected { background: var(--accent); border-color: var(--accent); color: white; font-size: 0.7rem; font-weight: 700; }
+        .rss-import-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+
+        /* ── Text Viewer Modal ── */
+        .text-viewer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); z-index: 200; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s; }
+        .text-viewer-overlay.hidden { display: none; }
+        .text-viewer-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; width: 94%; max-width: 800px; max-height: 88vh; display: flex; flex-direction: column; animation: modalIn 0.3s ease; overflow: hidden; }
+        .text-viewer-header { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.8rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+        .text-viewer-title { font-size: 0.92rem; font-weight: 700; color: var(--text); }
+        .text-viewer-actions { display: flex; gap: 0.5rem; }
+        .text-viewer-body { flex: 1; overflow-y: auto; padding: 1.5rem 1.8rem; }
+        .text-viewer-body pre { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; line-height: 1.8; color: var(--text-secondary); white-space: pre-wrap; word-break: break-word; }
+
+        /* ── Speaker cards (in modal) ── */
+        .speaker-block { background: var(--surface-2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1rem; }
+        .speaker-top { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.2rem; }
+        .speaker-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-deep), var(--cyan)); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 700; color: white; flex-shrink: 0; }
+        .speaker-label { font-size: 0.9rem; font-weight: 600; }
+        .speaker-controls { margin-left: auto; display: flex; gap: 0.5rem; align-items: center; }
+        .speaker-controls select { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.8rem; padding: 0.4rem 0.6rem; font-family: inherit; }
+
+        /* ── Feed items (in modal) ── */
+        .feed-row { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 0.6rem; }
+        .feed-row:hover { border-color: var(--border-hover); }
+        .feed-name { font-size: 0.85rem; font-weight: 600; }
+        .feed-url { font-size: 0.72rem; color: var(--text-dim); margin-top: 0.15rem; word-break: break-all; }
+        .feed-add-row { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.8rem; }
+        .feed-add-row input, .feed-add-row select { padding: 0.6rem 0.8rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.82rem; background: var(--bg); color: var(--text); font-family: inherit; }
+        .feed-add-row input:first-child { flex: 1.2; }
+        .feed-add-row input:nth-child(2) { flex: 2; }
+
+        /* ── Modal (full-page slide) ── */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s; }
+        .modal-overlay.hidden { display: none; }
+        .modal-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; width: 94%; max-width: 880px; max-height: 92vh; overflow-y: auto; padding: 2.5rem 3rem; animation: modalIn 0.3s ease; }
+        @keyframes modalIn { from { opacity: 0; transform: translateY(24px) scale(0.96); } to { opacity: 1; transform: none; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+        .modal-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 800; }
+        .modal-close { width: 36px; height: 36px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text-secondary); cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .modal-close:hover { border-color: var(--error); color: var(--error); background: rgba(248,113,113,0.08); }
+        .modal-footer { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+        .modal-divider { border: none; border-top: 1px solid var(--border); margin: 1.8rem 0; }
+
+        /* ── Onboarding ── */
+        .onboarding { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .onboarding.hidden { display: none; }
+        .ob-wrap { max-width: 560px; width: 92%; text-align: center; }
+        .ob-logo { margin-bottom: 1.2rem; }
+        .ob-logo img { width: 100px; height: 100px; filter: drop-shadow(0 0 30px rgba(129,140,248,0.4)); animation: drift 6s ease-in-out infinite; }
+        .ob-brand { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; background: linear-gradient(135deg, var(--accent-bright), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.3rem; letter-spacing: -1px; }
+        .ob-tagline { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 2.5rem; letter-spacing: 0.3px; }
+        .ob-dots { display: flex; gap: 6px; justify-content: center; margin-bottom: 2.2rem; }
+        .ob-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: all 0.3s; }
+        .ob-dot.active { background: var(--accent); width: 28px; border-radius: 4px; }
+        .ob-step { display: none; text-align: left; animation: modalIn 0.35s ease; }
+        .ob-step.active { display: block; }
+        .ob-step h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; text-align: center; }
+        .ob-step p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1.8rem; text-align: center; }
+        .ob-nav { display: flex; justify-content: space-between; margin-top: 2.5rem; }
+        .ob-feature { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 0; }
+        .ob-feature-num { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-deep), #7c3aed); display: flex; align-items: center; justify-content: center; font-size: 0.78rem; color: white; font-weight: 700; flex-shrink: 0; }
+        .ob-feature span { font-size: 0.88rem; color: var(--text-secondary); }
+        .ob-check { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0; font-size: 0.88rem; color: var(--text-secondary); }
+        .ob-check strong { color: var(--text); }
+
+        /* ── Empty state ── */
+        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-dim); }
+        .empty-state p { font-size: 0.92rem; margin-top: 0.5rem; }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+    </style>
+</head>
+<body>
+<div class="atmosphere"></div>
+<div class="noise"></div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- TEXT VIEWER MODAL                      -->
+<!-- ═══════════════════════════════════════ -->
+<div class="text-viewer-overlay hidden" id="text-viewer">
+    <div class="text-viewer-panel">
+        <div class="text-viewer-header">
+            <span class="text-viewer-title" id="text-viewer-title">Documento</span>
+            <div class="text-viewer-actions">
+                <button class="btn-toggle-log" onclick="copyTextViewer()"><svg viewBox='0 0 24 24'><rect x='9' y='9' width='13' height='13' rx='2' ry='2'/><path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/></svg> Copiar</button>
+                <button class="modal-close" onclick="closeTextViewer()">&times;</button>
+            </div>
+        </div>
+        <div class="text-viewer-body"><pre id="text-viewer-content"></pre></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- ONBOARDING                             -->
+<!-- ═══════════════════════════════════════ -->
+<div class="onboarding" id="onboarding">
+    <div class="ob-wrap">
+        <div class="ob-logo"><img src="/logo.svg" alt="Zifk"></div>
+        <div class="ob-brand">ZIFK</div>
+        <p class="ob-tagline">Bucea profundo. Informa al instante.</p>
+
+        <div class="ob-dots">
+            <div class="ob-dot active" data-step="0"></div>
+            <div class="ob-dot" data-step="1"></div>
+            <div class="ob-dot" data-step="2"></div>
+        </div>
+
+        <div class="ob-step active" data-step="0">
+            <h2>Bienvenido a Zifk</h2>
+            <p>Tu plataforma para crear programas de radio con inteligencia artificial.</p>
+            <div class="card" style="text-align:left;">
+                <div class="ob-feature"><div class="ob-feature-num">1</div><span>Configura tus credenciales de Google</span></div>
+                <div class="ob-feature"><div class="ob-feature-num">2</div><span>Crea programas radiales con sus locutores</span></div>
+                <div class="ob-feature"><div class="ob-feature-num">3</div><span>Genera podcasts profesionales con un clic</span></div>
+            </div>
+            <div class="ob-nav"><div></div><button class="btn btn-primary" onclick="obNext()">Comenzar &rarr;</button></div>
+        </div>
+
+        <div class="ob-step" data-step="1">
+            <h2>API Key de Gemini</h2>
+            <p>Necesitas una API Key gratuita de Google AI Studio para procesar noticias.</p>
+            <div class="form-group">
+                <label class="form-label">Gemini API Key <a href="https://aistudio.google.com/apikey" target="_blank">&nearr; Obtener gratis</a></label>
+                <input type="password" id="ob-gemini-key" class="form-input" placeholder="AIza...">
+            </div>
+            <div class="ob-nav"><button class="btn btn-secondary" onclick="obPrev()">&larr; Atras</button><button class="btn btn-primary" onclick="obNext()">Siguiente &rarr;</button></div>
+        </div>
+
+        <div class="ob-step" data-step="2">
+            <h2>Todo listo</h2>
+            <p>Se creo un programa de ejemplo que puedes editar o reemplazar.</p>
+            <div class="card" style="text-align:left;">
+                <div class="ob-check">&check; Programa: <strong>Noti IA</strong></div>
+                <div class="ob-check">&check; Locutores: <strong>Yanira</strong> + <strong>Mateo</strong></div>
+                <div class="ob-check">&check; 4 feeds RSS preconfigurados</div>
+            </div>
+            <div class="ob-nav"><button class="btn btn-secondary" onclick="obPrev()">&larr; Atras</button><button class="btn btn-primary" onclick="finishOnboarding()">Ir al panel &rtrif;</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- PROGRAM EDITOR MODAL                   -->
+<!-- ═══════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="program-modal">
+    <div class="modal-panel">
+        <div class="modal-header">
+            <div class="modal-title" id="modal-title">Nuevo Programa</div>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <input type="hidden" id="edit-prog-id" value="">
+
+        <div class="section-label">Informacion del programa</div>
+        <div class="form-row">
+            <div class="form-group"><label class="form-label">Nombre del programa</label><input id="edit-prog-name" class="form-input" placeholder="Ej: Noticias de la Manana"></div>
+            <div class="form-group"><label class="form-label">Radio / Estacion</label><input id="edit-prog-radio" class="form-input" placeholder="Ej: Radio Mi Ciudad"></div>
+        </div>
+        <div class="form-row">
+            <div class="form-group"><label class="form-label">Eslogan</label><input id="edit-prog-slogan" class="form-input" placeholder="Ej: La radio que informa"></div>
+            <div class="form-group"><label class="form-label">Audiencia</label><input id="edit-prog-audience" class="form-input" placeholder="Ej: todo el Peru"></div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Idioma del audio</label>
+            <select id="edit-prog-lang" class="form-input"><option value="es-419">Espanol (Latinoamerica)</option><option value="es">Espanol (Espana)</option><option value="en">Ingles</option></select>
+        </div>
+
+        <hr class="modal-divider">
+        <div class="section-label">Locutores (maximo 2)</div>
+        <div id="edit-speakers-list"></div>
+        <button class="btn btn-secondary" id="btn-add-speaker" onclick="addEditSpeaker()" style="margin-bottom:1rem;">+ Agregar locutor</button>
+
+        <hr class="modal-divider">
+        <div class="section-label">Fuentes RSS</div>
+        <div id="edit-feeds-list"></div>
+        <div class="feed-add-row">
+            <input id="edit-new-feed-name" class="form-input" placeholder="Nombre" style="width:auto;">
+            <input id="edit-new-feed-url" class="form-input" placeholder="URL del feed RSS" style="width:auto;">
+            <select id="edit-new-feed-priority" class="form-input" style="width:auto;padding-right:1.8rem;">
+                <option value="regional">Regional</option><option value="national" selected>Nacional</option><option value="international">Internacional</option>
+            </select>
+            <button class="btn btn-secondary" onclick="addEditFeed()">+</button>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+            <button class="btn btn-primary" onclick="saveProgram()">Guardar programa</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- APP SHELL                              -->
+<!-- ═══════════════════════════════════════ -->
+<div class="app" id="app" style="display:none;">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-inner">
+                <img src="/logo.svg" alt="Zifk" class="brand-logo">
+                <div class="brand-text">
+                    <h1>ZIFK</h1>
+                </div>
+            </div>
+            <p class="brand-slogan">Bucea profundo. Informa al instante.</p>
+        </div>
+        <nav>
+            <a href="#" data-page="generate" class="nav-link active">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                Generar
+            </a>
+            <a href="#" data-page="programs" class="nav-link">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                Programas
+            </a>
+            <a href="#" data-page="history" class="nav-link">
+                <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg>
+                Historial
+            </a>
+            <a href="#" data-page="rss-finder" class="nav-link">
+                <svg viewBox="0 0 24 24"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+                Buscador RSS
+            </a>
+            <a href="#" data-page="settings" class="nav-link">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Ajustes
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <span>v3.0 &mdash; Powered by</span>
+            <strong>Gemini + NotebookLM</strong>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="main-inner">
+
+        <!-- ═══ PAGE: Generate ═══ -->
+        <div class="page active" id="page-generate">
+            <div class="page-header">
+                <h2 class="page-title">Generar</h2>
+                <p class="page-desc">Selecciona un programa y genera su podcast con un clic.</p>
+            </div>
+
+            <div class="card">
+                <div class="section-label">Programa</div>
+                <select class="gen-select" id="gen-program-select" onchange="updatePreview()">
+                    <option value="">Selecciona un programa...</option>
+                </select>
+                <div id="gen-preview"></div>
+
+                <div class="status-row">
+                    <div class="status-pill"><span class="status-dot" id="dot-gemini"></span><span id="lbl-gemini">Gemini</span></div>
+                    <div class="status-pill"><span class="status-dot" id="dot-nlm"></span><span id="lbl-nlm">NotebookLM</span></div>
+                </div>
+
+                <button class="btn btn-primary btn-lg" id="btn-generate" onclick="startGeneration()" disabled>
+                    &#9654; Generar programa
+                </button>
+
+                <div class="progress-area" id="progress-wrap" style="display:none;">
+                    <div class="progress-header" id="progress-header">
+                        <span class="spinner" id="progress-spinner"></span>
+                        <span class="progress-header-label" id="progress-label">Preparando...</span>
+                    </div>
+                    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+                    <div class="progress-steps" id="progress-steps">
+                        <div class="progress-step pending" data-step="collecting"><div class="step-icon">1</div><span class="step-text">Recolectando noticias</span></div>
+                        <div class="progress-step pending" data-step="packaging"><div class="step-icon">2</div><span class="step-text">Empaquetando documento</span></div>
+                        <div class="progress-step pending" data-step="generating"><div class="step-icon">3</div><span class="step-text">Generando audio en NotebookLM</span></div>
+                    </div>
+                    <div id="result-area"></div>
+                </div>
+            </div>
+
+            <div class="recent-gen" id="recent-gen-section" style="display:none;">
+                <div class="recent-gen-title">Ultimas generaciones</div>
+                <div id="recent-gen-list"></div>
+            </div>
+        </div>
+
+        <!-- ═══ PAGE: Programs ═══ -->
+        <div class="page" id="page-programs">
+            <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <div>
+                    <h2 class="page-title">Programas</h2>
+                    <p class="page-desc">Crea y administra tus programas radiales.</p>
+                </div>
+                <button class="btn btn-primary" onclick="openNewProgram()">+ Nuevo programa</button>
+            </div>
+            <div class="programs-grid" id="programs-grid">
+                <div class="empty-state"><p>Cargando...</p></div>
+            </div>
+        </div>
+
+        <!-- ═══ PAGE: History ═══ -->
+        <div class="page" id="page-history">
+            <div class="page-header">
+                <h2 class="page-title">Historial</h2>
+                <p class="page-desc">Generaciones agrupadas por programa y fecha.</p>
+            </div>
+            <div id="history-list"><div class="empty-state"><p>Cargando...</p></div></div>
+        </div>
+
+        <!-- ═══ PAGE: RSS Finder ═══ -->
+        <div class="page" id="page-rss-finder">
+            <div class="page-header">
+                <h2 class="page-title">Buscador RSS</h2>
+                <p class="page-desc">Describe el tema de tu programa y Gemini encontrara fuentes RSS relevantes.</p>
+            </div>
+
+            <div class="card">
+                <div class="section-label">Buscar fuentes por tema</div>
+                <div class="rss-search-box">
+                    <input type="text" id="rss-query" class="form-input" placeholder="Ej: noticias de tecnologia en Peru, deportes latinoamerica...">
+                    <button class="btn btn-primary" id="btn-rss-search" onclick="searchRSS()">Buscar</button>
+                </div>
+                <div id="rss-search-status" style="display:none;margin-bottom:1rem;">
+                    <span class="spinner" style="display:inline-block;vertical-align:middle;margin-right:0.5rem;"></span>
+                    <span style="font-size:0.85rem;color:var(--text-secondary);">Buscando feeds con Gemini...</span>
+                </div>
+                <div class="rss-results" id="rss-results"></div>
+                <div class="rss-import-bar" id="rss-import-bar" style="display:none;">
+                    <span style="font-size:0.82rem;color:var(--text-secondary);"><span id="rss-selected-count">0</span> feeds seleccionados</span>
+                    <button class="btn btn-primary" onclick="importSelectedRSS()">Importar a nuevo programa</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ PAGE: Settings ═══ -->
+        <div class="page" id="page-settings">
+            <div class="page-header">
+                <h2 class="page-title">Ajustes</h2>
+                <p class="page-desc">Credenciales globales para la generacion de audio.</p>
+            </div>
+
+            <div class="card">
+                <div class="section-label">Gemini API Key</div>
+                <div class="form-group">
+                    <label class="form-label">API Key <a href="https://aistudio.google.com/apikey" target="_blank">&nearr; obtener gratis en AI Studio</a></label>
+                    <input type="password" id="cfg-gemini-key" class="form-input" placeholder="AIza...">
+                    <div class="form-hint">Se usa para procesar y resumir las noticias antes de enviarlas a NotebookLM.</div>
+                </div>
+                <div class="btn-row" style="margin-top:0.5rem;">
+                    <button class="btn btn-primary" onclick="saveGeminiKey()">Guardar</button>
+                    <button class="btn btn-secondary" onclick="validateGeminiKey()">Validar clave</button>
+                    <span id="gemini-validation-msg" style="font-size:0.82rem;"></span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="section-label">NotebookLM Session</div>
+                <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:1.2rem;">Inicia sesion con tu cuenta de Google para que Zifk pueda generar audios en NotebookLM.</p>
+                <div class="btn-row">
+                    <span class="badge" id="nlm-badge">...</span>
+                    <button class="btn btn-secondary" id="btn-nlm-login" onclick="loginNLM()">Abrir navegador</button>
+                    <button class="btn btn-success" id="btn-nlm-confirm" onclick="confirmNLM()" style="display:none;">Confirmar login</button>
+                    <span id="nlm-msg" style="font-size:0.8rem; color:var(--text-dim);"></span>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" onclick="showOnboarding()" style="margin-top:0.5rem;">Reiniciar onboarding</button>
+        </div>
+
+        </div><!-- /main-inner -->
+    </main>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- FLOATING PLAYER                        -->
+<!-- ═══════════════════════════════════════ -->
+<div class="floating-player" id="floating-player">
+    <button class="fp-btn" id="fp-play-btn" onclick="fpToggle()">
+        <svg class="fp-icon-play" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <svg class="fp-icon-pause" viewBox="0 0 24 24" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+    </button>
+    <div class="fp-info">
+        <div class="fp-title" id="fp-title">Sin reproduccion</div>
+        <div class="fp-time" id="fp-time">0:00 / 0:00</div>
+    </div>
+    <div class="fp-bar-wrap" onclick="fpSeek(event)">
+        <div class="fp-bar" id="fp-bar"></div>
+    </div>
+    <div class="fp-volume">
+        <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        <input type="range" min="0" max="1" step="0.05" id="fp-volume" oninput="fpSetVolume(this.value)">
+    </div>
+    <button class="fp-close" onclick="fpClose()" title="Cerrar">&times;</button>
+</div>
+
+<script>
+let appConfig = { geminiApiKey: '', programs: [], notebookLmAuthenticated: false };
+let polling = null;
+let obStep = 0;
+let editSpeakers = [];
+let editFeeds = [];
+let rssResults = [];
+let rssSelected = new Set();
+
+// ═══════════════════════════════════
+// Onboarding
+// ═══════════════════════════════════
+function checkOnboarding() {
+    if (localStorage.getItem('zifk_onboarding_done')) {
+        document.getElementById('onboarding').classList.add('hidden');
+        document.getElementById('app').style.display = 'flex';
+    }
+}
+function showOnboarding() {
+    localStorage.removeItem('zifk_onboarding_done');
+    document.getElementById('onboarding').classList.remove('hidden');
+    document.getElementById('app').style.display = 'none';
+    obStep = 0; renderObStep();
+}
+function obNext() { obStep++; renderObStep(); }
+function obPrev() { obStep--; renderObStep(); }
+function renderObStep() {
+    document.querySelectorAll('.ob-step').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.ob-dot').forEach(el => el.classList.remove('active'));
+    const s = document.querySelector(`.ob-step[data-step="${obStep}"]`);
+    const d = document.querySelector(`.ob-dot[data-step="${obStep}"]`);
+    if (s) s.classList.add('active');
+    if (d) d.classList.add('active');
+}
+async function finishOnboarding() {
+    const key = document.getElementById('ob-gemini-key').value.trim();
+    if (key) {
+        await fetch('/api/config', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ geminiApiKey: key }) });
+    }
+    localStorage.setItem('zifk_onboarding_done', '1');
+    document.getElementById('onboarding').classList.add('hidden');
+    document.getElementById('app').style.display = 'flex';
+    await loadAppConfig();
+}
+
+// ═══════════════════════════════════
+// Navigation
+// ═══════════════════════════════════
+document.querySelectorAll('[data-page]').forEach(link => {
+    link.addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
+        document.getElementById('page-' + link.dataset.page).classList.add('active');
+        link.classList.add('active');
+        if (link.dataset.page === 'history') loadHistory();
+        if (link.dataset.page === 'programs') renderPrograms();
+        if (link.dataset.page === 'generate') { loadRecentGenerations(); if (polling) {
+            const btn = document.getElementById('btn-generate');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner" style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:0.6rem;"></span> Generando...';
+        }}
+    });
+});
+
+// ═══════════════════════════════════
+// App Config
+// ═══════════════════════════════════
+async function loadAppConfig() {
+    const res = await fetch('/api/config');
+    appConfig = await res.json();
+    renderStatus();
+    renderGenerateSelector();
+    renderPrograms();
+}
+function renderStatus() {
+    const gOk = appConfig.geminiApiKey && appConfig.geminiApiKey.length > 5;
+    document.getElementById('dot-gemini').className = `status-dot ${gOk ? 'ok' : 'warn'}`;
+    document.getElementById('lbl-gemini').textContent = gOk ? 'Gemini OK' : 'Gemini: sin clave';
+    document.getElementById('dot-nlm').className = `status-dot ${appConfig.notebookLmAuthenticated ? 'ok' : 'warn'}`;
+    document.getElementById('lbl-nlm').textContent = appConfig.notebookLmAuthenticated ? 'NotebookLM OK' : 'NotebookLM: sin sesion';
+    document.getElementById('cfg-gemini-key').value = appConfig.geminiApiKey || '';
+    const b = document.getElementById('nlm-badge');
+    b.className = `badge ${appConfig.notebookLmAuthenticated ? 'badge-ok' : 'badge-warn'}`;
+    b.textContent = appConfig.notebookLmAuthenticated ? 'Autenticado' : 'No autenticado';
+}
+
+// ═══════════════════════════════════
+// Generate
+// ═══════════════════════════════════
+function renderGenerateSelector() {
+    const sel = document.getElementById('gen-program-select');
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">Selecciona un programa...</option>' +
+        appConfig.programs.map(p => `<option value="${p.id}"${p.id===cur?' selected':''}>${esc(p.name)} &mdash; ${esc(p.radio)}</option>`).join('');
+    updatePreview();
+}
+function updatePreview() {
+    const sel = document.getElementById('gen-program-select');
+    const box = document.getElementById('gen-preview');
+    const btn = document.getElementById('btn-generate');
+    const prog = appConfig.programs.find(p => p.id === sel.value);
+    if (!prog) { box.innerHTML = ''; btn.disabled = true; return; }
+    btn.disabled = !!polling; // mantener bloqueado si hay generacion activa
+    box.innerHTML = `<div class="preview-card">
+        <div class="preview-name">${esc(prog.name)}</div>
+        <div class="preview-radio">${esc(prog.radio)} &mdash; ${esc(prog.slogan)}</div>
+        <div class="preview-meta">
+            <span>&#127908; ${prog.speakers.map(s => s.name).join(' + ') || 'Sin locutores'}</span>
+            <span>&#128225; ${prog.feeds.filter(f => f.enabled).length} feeds</span>
+            <span>&#127760; ${prog.language || 'es-419'}</span>
+        </div>
+    </div>`;
+}
+function resetProgressUI() {
+    document.getElementById('progress-wrap').style.display = 'block';
+    document.getElementById('result-area').innerHTML = '';
+    document.getElementById('progress-fill').style.width = '0%';
+    document.getElementById('progress-fill').className = 'progress-fill';
+    document.getElementById('progress-spinner').style.display = '';
+    document.getElementById('progress-label').textContent = 'Preparando...';
+    document.getElementById('progress-header').style.display = '';
+    // Reset steps
+    document.querySelectorAll('.progress-step').forEach(el => {
+        el.className = 'progress-step pending';
+        el.querySelector('.step-icon').textContent = el.querySelector('.step-icon').textContent;
+    });
+    document.getElementById('progress-steps').style.display = '';
+}
+function genBtnReset() {
+    const btn = document.getElementById('btn-generate');
+    btn.disabled = false;
+    btn.innerHTML = '&#9654; Generar programa';
+}
+async function startGeneration() {
+    if (polling) return; // ya hay una generacion en curso
+    const programId = document.getElementById('gen-program-select').value;
+    if (!programId) return;
+    const btn = document.getElementById('btn-generate');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner" style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:0.6rem;"></span> Generando...';
+    resetProgressUI();
+    try {
+        const res = await fetch('/api/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ programId }) });
+        if (!res.ok) {
+            const e = await res.json().catch(() => ({ error: `Error HTTP ${res.status}` }));
+            showGenerationError(e.error || 'Error al iniciar la generacion', '');
+            genBtnReset();
+            return;
+        }
+        polling = setInterval(pollStatus, 2000);
+    } catch(err) {
+        showGenerationError('No se pudo conectar con el servidor', err.message);
+        genBtnReset();
+    }
+}
+const STEPS = { collecting: 'Recolectando noticias...', packaging: 'Empaquetando documento...', generating: 'Generando audio (5-15 min)...', done: 'Completado', error: 'Error en la generacion', idle: 'Listo' };
+const STEP_ORDER = ['collecting', 'packaging', 'generating'];
+function updateProgressSteps(currentStep) {
+    const steps = document.querySelectorAll('.progress-step');
+    let foundCurrent = false;
+    steps.forEach(el => {
+        const s = el.dataset.step;
+        if (s === currentStep) {
+            el.className = 'progress-step active';
+            el.querySelector('.step-icon').innerHTML = '<span class="spinner" style="width:14px;height:14px;border-width:2px;"></span>';
+            foundCurrent = true;
+        } else if (!foundCurrent) {
+            el.className = 'progress-step done';
+            el.querySelector('.step-icon').textContent = '\u2713';
+        } else {
+            el.className = 'progress-step pending';
+        }
+    });
+}
+function markAllStepsDone() {
+    document.querySelectorAll('.progress-step').forEach(el => {
+        el.className = 'progress-step done';
+        el.querySelector('.step-icon').textContent = '\u2713';
+    });
+}
+let lastLogs = [];
+async function pollStatus() {
+    try {
+        const res = await fetch('/api/status');
+        const s = await res.json();
+        document.getElementById('progress-label').textContent = STEPS[s.step] || s.step;
+        document.getElementById('progress-fill').style.width = s.progress + '%';
+        lastLogs = s.logs || [];
+        if (STEP_ORDER.includes(s.step)) updateProgressSteps(s.step);
+        if (!s.running) {
+            clearInterval(polling); polling = null;
+            genBtnReset();
+            if (s.result?.success) {
+                markAllStepsDone();
+                document.getElementById('progress-spinner').style.display = 'none';
+                document.getElementById('progress-label').textContent = 'Completado';
+                showGenerationSuccess(s.result.audioPath, s.result.duration, s.result.generationTime);
+            } else if (s.step === 'error' || (s.result && !s.result.success)) {
+                const errorMsg = s.result?.error || 'Error desconocido durante la generacion';
+                const fullLog = lastLogs.join('\n');
+                document.getElementById('progress-spinner').style.display = 'none';
+                document.getElementById('progress-header').style.display = 'none';
+                document.getElementById('progress-steps').style.display = 'none';
+                document.getElementById('progress-fill').classList.add('error');
+                document.getElementById('progress-fill').style.width = '100%';
+                showGenerationError(parseErrorSummary(errorMsg), fullLog);
+                if (s.notebookLmExpired) {
+                    appConfig.notebookLmAuthenticated = false;
+                    renderStatus();
+                }
+            }
+        }
+    } catch(err) {
+        // Network error during polling — don't stop, retry
+    }
+}
+function parseErrorSummary(errMsg) {
+    if (errMsg.includes('Authentication expired') || errMsg.includes('authentication expired')) return 'La sesion de NotebookLM ha expirado. Ve a Ajustes y vuelve a iniciar sesion.';
+    if (/c[oó]digo 1|code 1|terminó con código/i.test(errMsg)) {
+        const match = errMsg.match(/(?:ValueError|Error|Exception):\s*(.+?)(?:\s*Run |$)/s);
+        if (match) return match[1].split('\n')[0].trim();
+    }
+    if (errMsg.includes('Sin noticias')) return 'No se encontraron noticias en los feeds RSS configurados.';
+    if (errMsg.includes('ENOENT') || errMsg.includes('spawn')) return 'No se encontro Python. Verifica que "py" este disponible en el PATH.';
+    return errMsg.length > 200 ? errMsg.substring(0, 200) + '...' : errMsg;
+}
+function showGenerationError(summary, fullLog) {
+    const area = document.getElementById('result-area');
+    const logId = 'err-log-' + Date.now();
+    const hasLog = fullLog && fullLog.trim().length > 0;
+    area.innerHTML = `<div class="error-banner">
+        <div class="error-banner-header">
+            <div class="error-banner-icon">\u26A0</div>
+            <div class="error-banner-title">La generacion fallo</div>
+        </div>
+        <div class="error-banner-msg">${esc(summary)}</div>
+        <div class="error-banner-actions">
+            <button class="btn btn-secondary" onclick="resetProgressUI();startGeneration()" style="font-size:0.78rem;padding:0.45rem 0.9rem;">Reintentar</button>
+            ${hasLog ? `<button class="btn-toggle-log" onclick="toggleErrorLog(this,'${logId}')"><svg viewBox='0 0 24 24'><polyline points='6 9 12 15 18 9'/></svg> Ver detalles tecnicos</button>` : ''}
+            ${hasLog ? `<button class="btn-toggle-log" onclick="copyErrorLog('${logId}')"><svg viewBox='0 0 24 24'><rect x='9' y='9' width='13' height='13' rx='2' ry='2'/><path d='M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1'/></svg> Copiar log</button>` : ''}
+        </div>
+        ${hasLog ? `<div class="error-log-detail" id="${logId}"><pre>${formatErrorLog(fullLog)}</pre></div>` : ''}
+    </div>`;
+}
+function showGenerationSuccess(audioPath, duration, genTime) {
+    const area = document.getElementById('result-area');
+    const filename = audioPath.split('/').pop() || 'audio.mp3';
+    area.innerHTML = `<div class="success-banner">
+        <div class="success-banner-icon">\u2714</div>
+        <div class="success-banner-text">Podcast generado exitosamente.<small>${duration ? 'Duracion: '+esc(duration) : ''}${genTime ? ' &bull; Tiempo: '+esc(genTime) : ''}</small></div>
+        <div style="margin-top:0.8rem;display:flex;gap:0.6rem;align-items:center;">
+            <a href="${esc(audioPath)}" download="${esc(filename)}" class="btn btn-primary" style="text-decoration:none;font-size:0.82rem;padding:0.5rem 1rem;display:inline-flex;align-items:center;gap:0.4rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Descargar MP3
+            </a>
+            <audio controls src="${esc(audioPath)}" style="height:36px;"></audio>
+        </div>
+    </div>`;
+}
+function toggleErrorLog(btn, logId) {
+    const detail = document.getElementById(logId);
+    detail.classList.toggle('open');
+    btn.classList.toggle('open');
+}
+function copyErrorLog(logId) {
+    const detail = document.getElementById(logId);
+    const pre = detail ? detail.querySelector('pre') : null;
+    const text = pre ? pre.textContent : '';
+    navigator.clipboard.writeText(text).then(() => {
+        const btns = document.querySelectorAll('.btn-toggle-log');
+        btns.forEach(b => { if (b.textContent.includes('Copiar') || b.textContent.includes('Copiado')) {
+            const orig = b.innerHTML;
+            b.innerHTML = b.innerHTML.replace('Copiar log', '&check; Copiado');
+            setTimeout(() => b.innerHTML = orig.replace('Copiado', 'Copiar log'), 2000);
+        }});
+    });
+}
+function formatErrorLog(log) {
+    return log.split('\n').map(line => {
+        if (/error|traceback|exception|valueerror/i.test(line)) return `<span class="err-highlight">${esc(line)}</span>`;
+        return esc(line);
+    }).join('\n');
+}
+
+// ═══════════════════════════════════
+// Programs
+// ═══════════════════════════════════
+function renderPrograms() {
+    const g = document.getElementById('programs-grid');
+    if (!appConfig.programs || !appConfig.programs.length) {
+        g.innerHTML = '<div class="empty-state"><p>No hay programas aun. Crea tu primer programa radial.</p></div>';
+        return;
+    }
+    g.innerHTML = appConfig.programs.map(p => `
+        <div class="prog-card" ondblclick="openEditProgram('${p.id}')">
+            <div class="prog-card-name">${esc(p.name)}</div>
+            <div class="prog-card-radio">${esc(p.radio)}</div>
+            <div class="prog-card-slogan">"${esc(p.slogan)}"</div>
+            <div class="prog-card-meta">
+                <span>&#127908; ${p.speakers.map(s=>s.name).join(', ')||'Sin locutores'}</span>
+                <span>&#128225; ${p.feeds.length} feeds</span>
+                <span>&#127760; ${p.language||'es-419'}</span>
+            </div>
+            <div class="prog-card-actions">
+                <button class="btn btn-secondary" onclick="event.stopPropagation();openEditProgram('${p.id}')" style="font-size:0.78rem;padding:0.45rem 0.9rem;">Editar</button>
+                <button class="btn btn-danger" onclick="event.stopPropagation();deleteProgram('${p.id}')">Eliminar</button>
+            </div>
+        </div>
+    `).join('');
+}
+function openNewProgram() {
+    document.getElementById('modal-title').textContent = 'Nuevo Programa';
+    document.getElementById('edit-prog-id').value = '';
+    document.getElementById('edit-prog-name').value = '';
+    document.getElementById('edit-prog-radio').value = '';
+    document.getElementById('edit-prog-slogan').value = '';
+    document.getElementById('edit-prog-audience').value = '';
+    document.getElementById('edit-prog-lang').value = 'es-419';
+    editSpeakers = []; editFeeds = [];
+    renderEditSpeakers(); renderEditFeeds();
+    document.getElementById('program-modal').classList.remove('hidden');
+}
+function openEditProgram(id) {
+    const p = appConfig.programs.find(x => x.id === id);
+    if (!p) return;
+    document.getElementById('modal-title').textContent = 'Editar: ' + p.name;
+    document.getElementById('edit-prog-id').value = p.id;
+    document.getElementById('edit-prog-name').value = p.name;
+    document.getElementById('edit-prog-radio').value = p.radio;
+    document.getElementById('edit-prog-slogan').value = p.slogan;
+    document.getElementById('edit-prog-audience').value = p.audience;
+    document.getElementById('edit-prog-lang').value = p.language || 'es-419';
+    editSpeakers = JSON.parse(JSON.stringify(p.speakers || []));
+    editFeeds = JSON.parse(JSON.stringify(p.feeds || []));
+    renderEditSpeakers(); renderEditFeeds();
+    document.getElementById('program-modal').classList.remove('hidden');
+}
+function closeModal() { document.getElementById('program-modal').classList.add('hidden'); }
+
+// Speakers
+function renderEditSpeakers() {
+    const list = document.getElementById('edit-speakers-list');
+    document.getElementById('btn-add-speaker').style.display = editSpeakers.length >= 2 ? 'none' : '';
+    if (!editSpeakers.length) {
+        list.innerHTML = '<div class="empty-state" style="padding:1.5rem;"><p>Sin locutores. Agrega hasta 2.</p></div>';
+        return;
+    }
+    list.innerHTML = editSpeakers.map((s, i) => `
+        <div class="speaker-block">
+            <div class="speaker-top">
+                <div class="speaker-avatar">${s.name.charAt(0).toUpperCase()}</div>
+                <div class="speaker-label">Locutor ${i + 1}</div>
+                <div class="speaker-controls">
+                    <select onchange="editSpeakers[${i}].gender=this.value">
+                        <option value="female" ${s.gender==='female'?'selected':''}>Femenino</option>
+                        <option value="male" ${s.gender==='male'?'selected':''}>Masculino</option>
+                    </select>
+                    <button class="btn btn-danger" onclick="editSpeakers.splice(${i},1);renderEditSpeakers();">&times;</button>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Nombre del locutor</label>
+                    <input value="${esc(s.name)}" onchange="editSpeakers[${i}].name=this.value;this.closest('.speaker-block').querySelector('.speaker-avatar').textContent=this.value.charAt(0).toUpperCase();" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Personalidad y estilo</label>
+                    <textarea onchange="editSpeakers[${i}].personality=this.value" class="form-input">${esc(s.personality)}</textarea>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+function addEditSpeaker() {
+    if (editSpeakers.length >= 2) return;
+    editSpeakers.push({ id: 'spk_' + Date.now(), name: 'Nuevo Locutor', gender: 'male', personality: '' });
+    renderEditSpeakers();
+}
+
+// Feeds
+function renderEditFeeds() {
+    const list = document.getElementById('edit-feeds-list');
+    if (!editFeeds.length) {
+        list.innerHTML = '<div class="empty-state" style="padding:1rem;"><p>Sin fuentes RSS.</p></div>';
+        return;
+    }
+    list.innerHTML = editFeeds.map((f, i) => `
+        <div class="feed-row">
+            <div>
+                <div class="feed-name">${esc(f.name)} <span class="badge badge-muted">${f.priority}</span></div>
+                <div class="feed-url">${esc(f.url)}</div>
+            </div>
+            <button class="btn btn-danger" onclick="editFeeds.splice(${i},1);renderEditFeeds();">&times;</button>
+        </div>
+    `).join('');
+}
+function addEditFeed() {
+    const n = document.getElementById('edit-new-feed-name').value.trim();
+    const u = document.getElementById('edit-new-feed-url').value.trim();
+    const p = document.getElementById('edit-new-feed-priority').value;
+    if (!n || !u) return;
+    editFeeds.push({ name: n, url: u, enabled: true, priority: p });
+    document.getElementById('edit-new-feed-name').value = '';
+    document.getElementById('edit-new-feed-url').value = '';
+    renderEditFeeds();
+}
+async function saveProgram() {
+    const id = document.getElementById('edit-prog-id').value;
+    const body = {
+        name: document.getElementById('edit-prog-name').value.trim() || 'Mi Programa',
+        radio: document.getElementById('edit-prog-radio').value.trim(),
+        slogan: document.getElementById('edit-prog-slogan').value.trim(),
+        audience: document.getElementById('edit-prog-audience').value.trim(),
+        language: document.getElementById('edit-prog-lang').value,
+        speakers: editSpeakers, feeds: editFeeds,
+    };
+    if (id) await fetch(`/api/programs/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    else await fetch('/api/programs', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    closeModal();
+    await loadAppConfig();
+}
+async function deleteProgram(id) {
+    const p = appConfig.programs.find(x => x.id === id);
+    if (!confirm(`Eliminar "${p?.name || id}"?`)) return;
+    await fetch(`/api/programs/${id}`, { method: 'DELETE' });
+    await loadAppConfig();
+}
+
+// ═══════════════════════════════════
+// Settings
+// ═══════════════════════════════════
+async function saveGeminiKey() {
+    const key = document.getElementById('cfg-gemini-key').value.trim();
+    const msg = document.getElementById('gemini-validation-msg');
+    if (!key) { msg.innerHTML = '<span style="color:var(--error)">Ingresa una clave</span>'; return; }
+    await fetch('/api/config', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ geminiApiKey: key }) });
+    msg.innerHTML = '<span style="color:var(--success)">&check; Guardada</span>';
+    await loadAppConfig();
+}
+async function validateGeminiKey() {
+    const key = document.getElementById('cfg-gemini-key').value.trim();
+    const msg = document.getElementById('gemini-validation-msg');
+    if (!key) { msg.innerHTML = '<span style="color:var(--error)">Ingresa una clave primero</span>'; return; }
+    msg.innerHTML = '<span style="color:var(--text-dim)">Validando...</span>';
+    try {
+        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(key)}`);
+        if (r.ok) msg.innerHTML = '<span style="color:var(--success)">&check; Clave valida</span>';
+        else { const e = await r.json().catch(()=>({})); msg.innerHTML = `<span style="color:var(--error)">&cross; ${e.error?.message||r.status}</span>`; }
+    } catch(e) { msg.innerHTML = '<span style="color:var(--error)">&cross; Error de red</span>'; }
+}
+async function loginNLM() {
+    const btn = document.getElementById('btn-nlm-login');
+    const msg = document.getElementById('nlm-msg');
+    btn.disabled = true; msg.textContent = 'Abriendo navegador...';
+    const r = await fetch('/api/notebooklm/login', { method: 'POST' });
+    const d = await r.json();
+    msg.textContent = d.message;
+    document.getElementById('btn-nlm-confirm').style.display = 'inline-flex';
+    btn.disabled = false;
+}
+async function confirmNLM() {
+    const btn = document.getElementById('btn-nlm-confirm');
+    const msg = document.getElementById('nlm-msg');
+    btn.disabled = true; msg.textContent = 'Guardando sesion...';
+    const r = await fetch('/api/notebooklm/confirm', { method: 'POST' });
+    const d = await r.json();
+    msg.textContent = d.message || d.error;
+    btn.style.display = 'none';
+    await loadAppConfig();
+}
+
+// ═══════════════════════════════════
+// History
+// ═══════════════════════════════════
+async function loadHistory() {
+    const r = await fetch('/api/history');
+    const hist = await r.json();
+    const c = document.getElementById('history-list');
+    if (!hist || !hist.length) { c.innerHTML = '<div class="empty-state"><p>No hay generaciones aun. Selecciona un programa y genera tu primer podcast.</p></div>'; return; }
+    c.innerHTML = hist.map(pg => `
+        <div class="history-group">
+            <div class="history-group-title">${esc(pg.programName)}</div>
+            ${pg.days.map(day => `
+                <div class="day-group">
+                    <div class="day-label">${formatDate(day.date)}</div>
+                    ${day.entries.map(e => {
+                        const audioSrc = `/data/${pg.programId}/${day.date}/${e.audioFile}`;
+                        const srcPath = `/data/${pg.programId}/${day.date}/${e.sourcesFile}`;
+                        const promptPath = `/data/${pg.programId}/${day.date}/${e.promptFile}`;
+                        const uid = 'ap_' + Math.random().toString(36).slice(2,10);
+                        return `
+                        <div class="history-entry">
+                            <div class="history-entry-top">
+                                <div>
+                                    <div class="history-entry-title">${esc(e.programName||pg.programName)} &mdash; ${e.time||''}</div>
+                                    <div class="history-entry-meta">
+                                        <span>${e.newsCount||'?'} noticias</span>
+                                        <span>Duracion: ${e.audioDuration||'?'}</span>
+                                        <span>Tiempo: ${e.generationTime||'?'}</span>
+                                        ${e.speakers?'<span>'+e.speakers.join(' + ')+'</span>':''}
+                                    </div>
+                                    <div class="history-entry-links">
+                                        <a href="${audioSrc}" download="${e.audioFile}" class="btn btn-primary" style="text-decoration:none;font-size:0.72rem;padding:0.35rem 0.7rem;display:inline-flex;align-items:center;gap:0.3rem;">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                            Descargar
+                                        </a>
+                                        <button onclick="openTextViewer('${srcPath}','Fuentes - ${esc(e.programName||pg.programName)}')"><svg viewBox='0 0 24 24'><path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><polyline points='14 2 14 8 20 8'/></svg> Fuentes</button>
+                                        <button onclick="openTextViewer('${promptPath}','Prompt - ${esc(e.programName||pg.programName)}')"><svg viewBox='0 0 24 24'><path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'/><polyline points='14 2 14 8 20 8'/></svg> Prompt</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="audio-player" id="${uid}">
+                                <button class="audio-btn" onclick="toggleAudio('${uid}')">
+                                    <svg class="icon-play" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                    <svg class="icon-pause" viewBox="0 0 24 24" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                                </button>
+                                <div class="audio-progress">
+                                    <div class="audio-bar-wrap" onclick="seekAudio(event,'${uid}')">
+                                        <div class="audio-bar"></div>
+                                    </div>
+                                    <span class="audio-time">0:00 / 0:00</span>
+                                </div>
+                                <div class="audio-volume">
+                                    <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                                    <input type="range" min="0" max="1" step="0.05" value="${getVolume()}" oninput="setAudioVolume('${uid}',this.value)">
+                                </div>
+                                <audio preload="none" src="${audioSrc}"></audio>
+                            </div>
+                        </div>`;
+                    }).join('')}
+                </div>
+            `).join('')}
+        </div>
+    `).join('');
+}
+function formatDate(s) {
+    const d = new Date(s + 'T00:00:00');
+    return d.toLocaleDateString('es-PE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+// ═══════════════════════════════════
+// Custom Audio Player + Floating Player
+// ═══════════════════════════════════
+let currentPlayer = null;
+let fpAudio = null; // The audio element currently in the floating player
+let fpUid = null;
+const savedVolume = parseFloat(localStorage.getItem('zifk_volume') || '0.7');
+
+function getVolume() { return parseFloat(localStorage.getItem('zifk_volume') || '0.7'); }
+function setVolume(v) { localStorage.setItem('zifk_volume', v); }
+
+function toggleAudio(uid) {
+    const wrap = document.getElementById(uid);
+    const audio = wrap.querySelector('audio');
+    const playIcon = wrap.querySelector('.icon-play');
+    const pauseIcon = wrap.querySelector('.icon-pause');
+    // Set saved volume
+    audio.volume = getVolume();
+    if (audio.paused) {
+        if (currentPlayer && currentPlayer !== uid) {
+            const prev = document.getElementById(currentPlayer);
+            if (prev) { prev.querySelector('audio').pause(); prev.querySelector('.icon-play').style.display=''; prev.querySelector('.icon-pause').style.display='none'; }
+        }
+        currentPlayer = uid;
+        audio.play();
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = '';
+        // Show floating player
+        showFloatingPlayer(uid, audio);
+        requestAnimationFrame(() => updateAudioProgress(uid));
+    } else {
+        audio.pause();
+        playIcon.style.display = '';
+        pauseIcon.style.display = 'none';
+        updateFpPauseState(true);
+    }
+    audio.onended = () => { playIcon.style.display=''; pauseIcon.style.display='none'; updateFpPauseState(true); };
+}
+function updateAudioProgress(uid) {
+    const wrap = document.getElementById(uid);
+    if (!wrap) return;
+    const audio = wrap.querySelector('audio');
+    if (audio.paused) return;
+    const bar = wrap.querySelector('.audio-bar');
+    const time = wrap.querySelector('.audio-time');
+    const pct = audio.duration ? (audio.currentTime / audio.duration * 100) : 0;
+    bar.style.width = pct + '%';
+    time.textContent = fmtTime(audio.currentTime) + ' / ' + fmtTime(audio.duration || 0);
+    // Update floating player
+    if (fpUid === uid) {
+        document.getElementById('fp-bar').style.width = pct + '%';
+        document.getElementById('fp-time').textContent = fmtTime(audio.currentTime) + ' / ' + fmtTime(audio.duration || 0);
+    }
+    requestAnimationFrame(() => updateAudioProgress(uid));
+}
+function seekAudio(e, uid) {
+    const wrap = document.getElementById(uid);
+    const audio = wrap.querySelector('audio');
+    const bar = e.currentTarget;
+    const rect = bar.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    if (audio.duration) audio.currentTime = pct * audio.duration;
+    wrap.querySelector('.audio-bar').style.width = (pct * 100) + '%';
+}
+function setAudioVolume(uid, val) {
+    const wrap = document.getElementById(uid);
+    const audio = wrap.querySelector('audio');
+    audio.volume = val;
+    setVolume(val);
+    // Sync floating player volume
+    document.getElementById('fp-volume').value = val;
+}
+function fmtTime(s) {
+    if (!s || isNaN(s)) return '0:00';
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return m + ':' + (sec < 10 ? '0' : '') + sec;
+}
+
+// ═══════════════════════════════════
+// Floating Player
+// ═══════════════════════════════════
+function showFloatingPlayer(uid, audio) {
+    fpAudio = audio;
+    fpUid = uid;
+    const fp = document.getElementById('floating-player');
+    fp.classList.add('visible');
+    // Get title from history entry
+    const wrap = document.getElementById(uid);
+    const entry = wrap.closest('.history-entry') || wrap.closest('.recent-item');
+    let title = 'Reproduciendo...';
+    if (entry) {
+        const t = entry.querySelector('.history-entry-title') || entry.querySelector('.recent-item-name');
+        if (t) title = t.textContent;
+    }
+    document.getElementById('fp-title').textContent = title;
+    document.getElementById('fp-volume').value = getVolume();
+    updateFpPauseState(false);
+    // Start progress loop
+    fpProgressLoop();
+}
+function fpProgressLoop() {
+    if (!fpAudio || fpAudio.paused) return;
+    const pct = fpAudio.duration ? (fpAudio.currentTime / fpAudio.duration * 100) : 0;
+    document.getElementById('fp-bar').style.width = pct + '%';
+    document.getElementById('fp-time').textContent = fmtTime(fpAudio.currentTime) + ' / ' + fmtTime(fpAudio.duration || 0);
+    requestAnimationFrame(fpProgressLoop);
+}
+function updateFpPauseState(paused) {
+    const playI = document.querySelector('.fp-icon-play');
+    const pauseI = document.querySelector('.fp-icon-pause');
+    if (paused) { playI.style.display = ''; pauseI.style.display = 'none'; }
+    else { playI.style.display = 'none'; pauseI.style.display = ''; }
+}
+function fpToggle() {
+    if (!fpAudio) return;
+    if (fpAudio.paused) {
+        fpAudio.play();
+        updateFpPauseState(false);
+        // Also update the inline player
+        if (fpUid) {
+            const wrap = document.getElementById(fpUid);
+            if (wrap) { const pi = wrap.querySelector('.icon-play'); const pa = wrap.querySelector('.icon-pause'); if (pi) pi.style.display = 'none'; if (pa) pa.style.display = ''; }
+        }
+        fpProgressLoop();
+        if (fpUid) requestAnimationFrame(() => updateAudioProgress(fpUid));
+    } else {
+        fpAudio.pause();
+        updateFpPauseState(true);
+        if (fpUid) {
+            const wrap = document.getElementById(fpUid);
+            if (wrap) { const pi = wrap.querySelector('.icon-play'); const pa = wrap.querySelector('.icon-pause'); if (pi) pi.style.display = ''; if (pa) pa.style.display = 'none'; }
+        }
+    }
+}
+function fpSeek(e) {
+    if (!fpAudio) return;
+    const bar = e.currentTarget;
+    const rect = bar.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    if (fpAudio.duration) fpAudio.currentTime = pct * fpAudio.duration;
+    document.getElementById('fp-bar').style.width = (pct * 100) + '%';
+}
+function fpSetVolume(val) {
+    val = parseFloat(val);
+    setVolume(val);
+    if (fpAudio) fpAudio.volume = val;
+    // Sync inline volume sliders
+    document.querySelectorAll('.audio-volume input[type=range]').forEach(r => r.value = val);
+}
+function fpClose() {
+    if (fpAudio) { fpAudio.pause(); }
+    document.getElementById('floating-player').classList.remove('visible');
+    if (fpUid) {
+        const wrap = document.getElementById(fpUid);
+        if (wrap) { const pi = wrap.querySelector('.icon-play'); const pa = wrap.querySelector('.icon-pause'); if (pi) pi.style.display = ''; if (pa) pa.style.display = 'none'; }
+    }
+    fpAudio = null; fpUid = null;
+}
+
+// ═══════════════════════════════════
+// Text Viewer
+// ═══════════════════════════════════
+async function openTextViewer(url, title) {
+    const overlay = document.getElementById('text-viewer');
+    document.getElementById('text-viewer-title').textContent = title || 'Documento';
+    document.getElementById('text-viewer-content').textContent = 'Cargando...';
+    overlay.classList.remove('hidden');
+    try {
+        const r = await fetch(url);
+        const text = await r.text();
+        document.getElementById('text-viewer-content').textContent = text;
+    } catch(e) {
+        document.getElementById('text-viewer-content').textContent = 'Error al cargar el archivo.';
+    }
+}
+function closeTextViewer() { document.getElementById('text-viewer').classList.add('hidden'); }
+function copyTextViewer() {
+    const text = document.getElementById('text-viewer-content').textContent;
+    navigator.clipboard.writeText(text);
+}
+document.getElementById('text-viewer').addEventListener('click', e => {
+    if (e.target.classList.contains('text-viewer-overlay')) closeTextViewer();
+});
+
+// ═══════════════════════════════════
+// Recent Generations (Generate page)
+// ═══════════════════════════════════
+async function loadRecentGenerations() {
+    try {
+        const r = await fetch('/api/history');
+        const hist = await r.json();
+        const all = [];
+        for (const pg of hist) {
+            for (const day of pg.days) {
+                for (const e of day.entries) {
+                    all.push({ ...e, programId: pg.programId, programName: pg.programName, date: day.date });
+                }
+            }
+        }
+        // Sort by date+time descending, take 5
+        all.sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
+        const top5 = all.slice(0, 5);
+        const section = document.getElementById('recent-gen-section');
+        const list = document.getElementById('recent-gen-list');
+        if (!top5.length) { section.style.display = 'none'; return; }
+        section.style.display = '';
+        list.innerHTML = top5.map(e => {
+            const audioSrc = `/data/${e.programId}/${e.date}/${e.audioFile}`;
+            const uid = 'rp_' + Math.random().toString(36).slice(2,10);
+            return `<div class="recent-item" id="${uid}">
+                <button class="recent-item-play" onclick="playRecent('${uid}','${audioSrc}','${esc(e.programName)} - ${e.date}')">
+                    <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </button>
+                <div class="recent-item-info">
+                    <div class="recent-item-name">${esc(e.programName)}</div>
+                    <div class="recent-item-meta">${e.date} &bull; ${e.newsCount||'?'} noticias &bull; ${e.audioDuration||'?'}</div>
+                </div>
+                <a href="${audioSrc}" download="${e.audioFile}" class="recent-item-dl" title="Descargar MP3">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </a>
+                <audio preload="none" src="${audioSrc}"></audio>
+            </div>`;
+        }).join('');
+    } catch(e) {}
+}
+function playRecent(uid, src, title) {
+    const wrap = document.getElementById(uid);
+    const audio = wrap.querySelector('audio');
+    audio.volume = getVolume();
+    // Stop any current player
+    if (fpAudio && fpAudio !== audio) { fpAudio.pause(); }
+    if (currentPlayer) {
+        const prev = document.getElementById(currentPlayer);
+        if (prev) { prev.querySelector('.icon-play')?.style.display && (prev.querySelector('.icon-play').style.display=''); prev.querySelector('.icon-pause')?.style.display && (prev.querySelector('.icon-pause').style.display='none'); }
+    }
+    audio.play();
+    currentPlayer = uid;
+    fpAudio = audio;
+    fpUid = uid;
+    const fp = document.getElementById('floating-player');
+    fp.classList.add('visible');
+    document.getElementById('fp-title').textContent = title;
+    document.getElementById('fp-volume').value = getVolume();
+    updateFpPauseState(false);
+    fpProgressLoop();
+    audio.onended = () => { updateFpPauseState(true); };
+}
+
+// ═══════════════════════════════════
+// RSS Finder (Gemini)
+// ═══════════════════════════════════
+async function searchRSS() {
+    const query = document.getElementById('rss-query').value.trim();
+    if (!query) return;
+    const btn = document.getElementById('btn-rss-search');
+    const status = document.getElementById('rss-search-status');
+    const results = document.getElementById('rss-results');
+    btn.disabled = true;
+    status.style.display = '';
+    results.innerHTML = '';
+    document.getElementById('rss-import-bar').style.display = 'none';
+    rssResults = []; rssSelected = new Set();
+    try {
+        const r = await fetch('/api/rss-finder', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query }) });
+        const data = await r.json().catch(() => ({ error: `Error HTTP ${r.status}` }));
+        if (!r.ok || data.error) {
+            const msg = data.error || `Error del servidor (${r.status})`;
+            const isQuota = msg.includes('quota') || msg.includes('rate');
+            results.innerHTML = `<div class="empty-state"><p style="color:var(--error)">${esc(isQuota ? 'Limite de uso de Gemini alcanzado. Espera unos segundos e intenta de nuevo.' : msg)}</p></div>`;
+            return;
+        }
+        rssResults = data.feeds || [];
+        if (!rssResults.length) {
+            const info = data.totalSuggested ? `Gemini sugirio ${data.totalSuggested} feeds pero ninguno es RSS valido.` : 'No se encontraron feeds para ese tema.';
+            results.innerHTML = `<div class="empty-state"><p>${esc(info)}</p></div>`;
+            return;
+        }
+        if (data.totalSuggested && data.totalValid) {
+            results.innerHTML = `<p style="font-size:0.8rem;color:var(--text-dim);margin-bottom:1rem;">${data.totalValid} de ${data.totalSuggested} feeds sugeridos son RSS validos y verificados.</p>`;
+        }
+        renderRSSResults();
+        document.getElementById('rss-import-bar').style.display = 'flex';
+    } catch(e) {
+        results.innerHTML = `<div class="empty-state"><p style="color:var(--error)">No se pudo conectar con el servidor. Verifica que este corriendo.</p></div>`;
+    } finally {
+        btn.disabled = false;
+        status.style.display = 'none';
+    }
+}
+function renderRSSResults() {
+    const results = document.getElementById('rss-results');
+    results.innerHTML = rssResults.map((f, i) => `
+        <div class="rss-result-card">
+            <div style="display:flex;align-items:flex-start;gap:1rem;">
+                <div class="rss-result-check ${rssSelected.has(i)?'selected':''}" onclick="toggleRSSSelect(${i})">${rssSelected.has(i)?'&#10003;':''}</div>
+                <div style="flex:1;min-width:0;">
+                    <div class="rss-result-name">${esc(f.name)}</div>
+                    <div class="rss-result-url">${esc(f.url)}</div>
+                    <div class="rss-result-desc">${esc(f.description)}</div>
+                    <span class="badge badge-muted">${esc(f.priority||'national')}</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+function toggleRSSSelect(i) {
+    if (rssSelected.has(i)) rssSelected.delete(i); else rssSelected.add(i);
+    document.getElementById('rss-selected-count').textContent = rssSelected.size;
+    renderRSSResults();
+}
+function importSelectedRSS() {
+    if (!rssSelected.size) return;
+    const feeds = [...rssSelected].map(i => rssResults[i]).map(f => ({ name: f.name, url: f.url, enabled: true, priority: f.priority || 'national' }));
+    // Open new program modal with feeds pre-loaded
+    document.getElementById('modal-title').textContent = 'Nuevo Programa';
+    document.getElementById('edit-prog-id').value = '';
+    document.getElementById('edit-prog-name').value = '';
+    document.getElementById('edit-prog-radio').value = '';
+    document.getElementById('edit-prog-slogan').value = '';
+    document.getElementById('edit-prog-audience').value = '';
+    document.getElementById('edit-prog-lang').value = 'es-419';
+    editSpeakers = []; editFeeds = feeds;
+    renderEditSpeakers(); renderEditFeeds();
+    document.getElementById('program-modal').classList.remove('hidden');
+}
+
+// ═══════════════════════════════════
+// Utils
+// ═══════════════════════════════════
+function esc(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+// ═══════════════════════════════════
+// Recover in-progress generation on page load
+async function recoverGeneration() {
+    try {
+        const res = await fetch('/api/status');
+        const s = await res.json();
+        if (s.running) {
+            // Switch to generate page
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.toggle('active', l.dataset.page === 'generate'));
+            document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-generate'));
+            // Select the program in dropdown if possible
+            const sel = document.getElementById('gen-program-select');
+            if (sel && s.programId) {
+                for (const opt of sel.options) { if (opt.value === s.programId) { sel.value = s.programId; break; } }
+            }
+            // Show progress UI
+            resetProgressUI();
+            const btn = document.getElementById('btn-generate');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner" style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:0.6rem;"></span> Generando...';
+            // Update UI with current state
+            document.getElementById('progress-label').textContent = STEPS[s.step] || s.step;
+            document.getElementById('progress-fill').style.width = s.progress + '%';
+            if (STEP_ORDER.includes(s.step)) updateProgressSteps(s.step);
+            // Start polling
+            polling = setInterval(pollStatus, 2000);
+        }
+    } catch(e) { /* server not reachable, ignore */ }
+}
+
+// Init
+// ═══════════════════════════════════
+loadAppConfig().then(() => {
+    if (appConfig.geminiApiKey) document.getElementById('ob-gemini-key').value = appConfig.geminiApiKey;
+    checkOnboarding();
+    loadRecentGenerations();
+    recoverGeneration();
+});
+</script>
+</body>
+</html>
